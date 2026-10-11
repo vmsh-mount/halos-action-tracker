@@ -79,9 +79,16 @@ it but cannot justify a change alone. The speaker is not supplied by the model; 
 the quote was found in.
 
 **Due dates: the model returns the phrase, code works out the date.** The model gives only `due_phrase`,
-the words naming the day (`"Wednesday"`, `"tonight"`), and they must appear inside one of the change's
-quotes. It never returns a calendar date. Date arithmetic is a known weak spot for models and trivial for
-code, and this way there is one authority on what "Monday" means.
+and it must appear inside one of the change's quotes. Three rules for what goes in it:
+
+- **Always return it when a day is said for this work**, however unsure or conditional it sounds. A change
+  with no phrase leaves an existing date alone, so a withheld hedge would silently keep the old date.
+- **Keep it short: the day word, plus any word attached to it that shifts the day.** "Wednesday", "tonight",
+  "next Friday", "Thursday or Friday", "end of week". Not the rest of the sentence.
+- **Hedges and conditions need not be in it.** Code reads the whole sentence the phrase sits in (step D2),
+  so "probably" or "if the cert lands" is seen either way.
+
+The model never returns a calendar date.
 
 **Fields in an update** have three states: a value (set it), explicitly empty (clear it), or left out
 (unchanged).
@@ -111,9 +118,9 @@ phrase leaves the item's date alone. The first step that matches decides.
 | # | Case | Date | Phrase | Flag |
 |---|---|---|---|---|
 | D1 | The phrase is not inside any of the quotes (a model error) | Existing date untouched | Not stored | Needs review |
-| D2 | Hedged: the sentence holding the phrase has a hedge word (maybe, probably, perhaps, possibly, might, hopefully, worst case), or the phrase itself names two different days | Cleared, including any existing date | Stored | Needs review |
-| D3 | The phrase is a day code can work out: today, tonight, this morning / afternoon, tomorrow, a weekday name (the next one after the standup date), a written date | Set | Stored | — |
-| D4 | Anything else ("next week", "after this", "end of sprint") | Empty. If the item had a date, it is cleared | Stored | Only if a date was cleared |
+| D2 | Hedged or conditional: the sentence holding the phrase has a hedge word (maybe, probably, perhaps, possibly, might, hopefully, worst case) or a condition word (if, once, unless), or the phrase itself names two different days | Cleared, including any existing date | Stored | Needs review |
+| D3 | The phrase holds one day code can work out, and no day-shifting word. Days: today, tonight, tomorrow, a weekday name (the next one after the standup date), a written date; "this morning / afternoon / evening" and "end of day" mean today. Times of day are set aside first (morning, afternoon, after lunch). Other leftover words are ignored, so "Still Monday" and "Should be done tomorrow" work | Set | Stored | — |
+| D4 | The phrase has a day-shifting word (next, after, following, before, week, or), or no day code knows: "next Friday", "next week", "after this", "end of sprint" | Empty. If the item had a date, it is cleared | Stored | Only if a date was cleared |
 
 D1 and D2 look alike on the page but are different events. D1 is the model's mistake, so nothing it said
 about the date is trusted and the old date stands. D2 is the speaker being unsure, so the old date is gone.
@@ -136,6 +143,9 @@ Nothing else is discarded silently: a failed change is still visible to the lead
   lead fills it in.
 - The hedge list is short and English only. It will sometimes clear a date that was firm, which is the safe
   direction.
+- A day-shifting word the model leaves off. It is told to keep such words in the phrase, but if it returns
+  "Friday" for "next Friday", code sets this coming Friday.
+- The day-shifting list, like the hedge list, is short and English only.
 - "Thursday or Friday" is caught only if the model returns both days in the phrase. If it returns just
   "Thursday", code sets Thursday. Scanning the whole sentence for a second day is not an option: Monday's
   export sentence names Friday, "this morning" and Monday, and is not a hedge.
@@ -178,6 +188,8 @@ acceptable; the lead settles them on the page.
 | U17 | A statement about several items at once | One update per affected item, each quoting the same sentence. Affects that person's active items (not done, not dropped) that are due before the new date | "anything of hers rolls to Monday" → APP-402 to 20 Oct | Firm |
 | U18 | `open` or `in_progress` | `in_progress` only when the owner reports working on it; otherwise `open` | "Search, still on it." → in_progress; "I'm picking up the Hermes retry bug" → either | Soft |
 | U19 | The team cancels work | `dropped`, only on words that say so. The item stays on the list | No case in the five days. Invented: "Let's not do the export after all, sales don't need it" | Firm |
+| U20 | A promise that depends on something else happening | Item, with the condition in `note`, no date, needs review. The model returns the date expression as said, condition included; date step D2 gives it no date | No case in the five days. Invented: "If the cert lands, I'll deploy tomorrow" | Firm |
+| U21 | A speaker corrects themselves | The corrected value is the one used, for an owner, a date or a status. For a date the model returns the corrected expression; if it returns both, date step D2 clears the date and asks the lead | No case in the five days. Invented: "Tuesday. Sorry, not Tuesday, Thursday" | Firm |
 
 ## 6. What the lead does
 

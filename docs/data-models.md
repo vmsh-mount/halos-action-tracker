@@ -35,6 +35,9 @@ other line continues the previous turn, so pasted text with wrapped lines still 
 at the start of a wrapped line is not a speaker (apostrophe, lower-case word). Text before the first speaker
 line is kept as a turn with no speaker.
 
+If no line in the text starts a speaker turn, the run stops with a message and nothing is sent to the
+model. Otherwise the whole text would count as one turn and any quote would pass check C1.
+
 A stray "Note:" would still pass as a speaker. So any speaker who is not in the team settings is listed on
 the review page as "new speaker", where the lead can see a real newcomer (Rohan) or a mis-split.
 
@@ -58,8 +61,8 @@ the specific entries.
 | What | Contents |
 |---|---|
 | Statuses | Key, label, whether it is closed, and which one a new item starts in. `open` (start), `in_progress`, `blocked`, `done` (closed), `dropped` (closed) |
-| Hedge words | The list used by date step D2 |
-| Day words | What date step D3 understands: today, tonight, tomorrow, weekday names, written dates |
+| Hedge and condition words | The lists used by date step D2 |
+| Day words | What date step D3 understands (today, tonight, tomorrow, weekday names, written dates, times of day) and the day-shifting words that send a phrase to D4 |
 
 Adding a status is still one entry in one place.
 

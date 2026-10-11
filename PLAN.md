@@ -67,9 +67,9 @@ Each milestone ends with something you can look at, then stops for your go-ahead
 | M3 | Reading transcripts | Generic LLM interface with OpenRouter and replay implementations; Mon–Fri run live from the command line; responses saved | 55 min |
 | M4 | Review page | Submit transcript + date, see today's changes with supporting words, edit owner/date, remove, approve | 55 min |
 | M5 | Tests | The agreed checks, one command, on saved responses; separate script for a live run | 40 min |
-| M6 | Write-up | README complete; final live run on an unseen sixth transcript | 25 min |
+| M6 | Write-up and held-out run | README complete; prompt and code frozen at a named commit, then the held-out set run three times against the live model and reported as it came out | 40 min |
 
-Total 4 h 20 min, leaving 40 min of slack. If M4 runs long, M5 is protected and the page loses polish first.
+Total 4 h 35 min, leaving 25 min of slack. If M4 runs long, M5 is protected and the page loses polish first.
 
 ## 4. Out of scope
 
@@ -84,7 +84,7 @@ Total 4 h 20 min, leaving 40 min of slack. If M4 runs long, M5 is protected and 
 - Streaming responses, cost tracking, automatic fallback between models.
 - Comparing or benchmarking several models; one is picked and named in the README.
 - Visual polish beyond clear and readable; no mobile layout.
-- A large evaluation set; the five transcripts plus one unseen one are the test data.
+- A large evaluation set. The five transcripts are the practice set; a held-out set of four more (written outside this repo) is run once at the end.
 
 ## 5. Setup
 
@@ -111,7 +111,8 @@ halos-assignment/
   docs/            design documents (section 6)
   tasks/           one file per milestone: the work items and what counts as done
   progress/        one dated note per milestone: what was done, evidence, time spent, what's open
-  transcripts/     2025-10-13.txt … 2025-10-17.txt, plus one unseen
+  transcripts/     2025-10-13.txt … 2025-10-17.txt (the practice set)
+  heldout/         held-out standups and their expected properties, added only after the freeze
   src/             application code
   tests/           tests and saved model responses
   data/            local state (git-ignored)
@@ -126,6 +127,7 @@ Written and approved in M1, before any implementation.
 | `docs/action-item-rules.md` | What an item and a change look like; how the model's output is checked and applied; how unclear ownership, vague dates, reopened items and non-items are treated |
 | `docs/data-models.md` | Every stored shape besides the item: standup, team settings, proposed and checked changes, history, day record, the saved file, saved model answers |
 | `docs/answer-key-five-standups.md` | Day by day, what a correct run of the given transcripts proposes, the supporting words, and the trap in each |
+| `docs/generalisation-beyond-the-five-standups.md` | Why nothing may be shaped around the given week: general behaviours, prompt principles, untested cases, property checks, the held-out set |
 | `docs/components-and-data-flow.md` | Components and how they connect, the LLM interface, storage, the review flow from draft to approved |
 | `docs/evaluation-checks.md` | Which checks, what each one demonstrates, saved versus live |
 
