@@ -41,7 +41,7 @@ Why this shape:
 | `ticket` | Ticket id if one was said | PAY-231 |
 | `parent` | The item this one is a part of, or empty | A8 (review Dev's PR) → `A2` (the auth bug) |
 | `note` | One line on where it stands | "Waiting on infra for the cert" |
-| `needs_review` + reason | The system was unsure; a human should decide | "Raised, deferred, no decision" |
+| `review_reasons` | Why a human should look; a list, and "needs review" means it is not empty | "Raised, deferred, no decision" |
 | `history` | Every change: date, what changed, the quotes, who made it (model or lead) | |
 
 Choices:
@@ -68,7 +68,7 @@ Two kinds of change, plus a list of things it chose not to track.
 
 | Kind | Contains |
 |---|---|
-| `add` | a label for this response only (`new1`, `new2`), title, and any of owner / due phrase / status / ticket / parent / note; quotes; optional needs-review reason |
+| `add` | a `ref` naming it within this response only (`new1`, `new2`), title, and any of owner / due phrase / status / ticket / parent / note; quotes; optional needs-review reason |
 | `update` | the item's `id`, the fields that change; quotes; optional needs-review reason |
 | `not_tracked` | one quote and a short reason ("already done", "meeting, not an action", "small talk") |
 
@@ -86,7 +86,7 @@ code, and this way there is one authority on what "Monday" means.
 **Fields in an update** have three states: a value (set it), explicitly empty (clear it), or left out
 (unchanged).
 
-**Parent** is either the id of an existing item, or the label of another `add` in the same response. The
+**Parent** is either the id of an existing item, or the `ref` of another `add` in the same response. The
 second form covers "I'll fix X" and "I'll review it" said in one standup, where the parent has no id yet.
 
 There is no separate "close", "reassign" or "re-date" kind. The page works those labels out from which field

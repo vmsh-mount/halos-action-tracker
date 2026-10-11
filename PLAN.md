@@ -124,6 +124,7 @@ Written and approved in M1, before any implementation.
 | Document | Answers |
 |---|---|
 | `docs/action-item-rules.md` | What an item and a change look like; how the model's output is checked and applied; how unclear ownership, vague dates, reopened items and non-items are treated |
+| `docs/data-models.md` | Every stored shape besides the item: standup, team settings, proposed and checked changes, history, day record, the saved file, saved model answers |
 | `docs/components-and-data-flow.md` | Components and how they connect, the LLM interface, storage, the review flow from draft to approved |
 | `docs/evaluation-checks.md` | Which checks, what each one demonstrates, saved versus live |
 
