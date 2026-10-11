@@ -1,6 +1,6 @@
 # Components and data flow — the parts of the program and how a standup moves through them
 
-Status: **proposal for review** (third revision). No code exists yet.
+Status: **approved**, with corrections from `implementation-details.md` sections 10 and 11 applied. No code exists yet.
 
 What the program is made of, what each part is allowed to know, and the path from "transcript submitted" to
 "list approved". The shapes passed around are in `data-models.md`; the rules applied are in
@@ -108,10 +108,13 @@ Rules:
 - Nothing outside `llm/` imports a network library, names a provider, or reads a key.
 - Adding a provider is one new file implementing the one operation.
 - **The answer is always checked by our own code**, whatever the provider promises. We ask for JSON in a
-  given shape; `extract` strips any code fence around it (many models add one), validates it, and refuses
-  anything else. That keeps us independent of any one provider's structured-output feature.
-- **One retry, for three causes.** A timeout, a server error (5xx), or an answer in the wrong shape gets one
-  more attempt; never more than two attempts in all. A wrong-shape retry sends the validation error back
+  given shape; `extract` strips any code fence around it (many models add one) and validates it. Only an
+  answer that cannot be read at all (not JSON, or no `changes` list) is refused as a whole. A slip inside
+  one change, such as an unknown status or a missing field, costs that change or that field, never the run.
+  Unknown keys are ignored. That keeps us independent of any one provider's structured-output feature.
+- **One retry, never more than two attempts in all.** Retried: a timeout, a server error (5xx), a rate limit
+  (429, after the pause the provider asks for, or 5 seconds), a 200 whose body is empty or carries an error
+  instead of an answer, and an answer that cannot be read. Other errors (a bad key, no credit) fail at once. A wrong-shape retry sends the validation error back
   to the model with the request: at temperature 0 the same request tends to return the same wrong answer.
   If the second attempt fails, the run fails as described in `data-models.md` section 9. Both attempts are
   kept. The fingerprint saved with an answer is always that of the **original** request, even when the
@@ -152,7 +155,8 @@ The page shows, top to bottom:
 4. **Heard but not tracked**: the model's list.
 5. **The whole list**, with the untouched items dimmed and overdue items (date passed, still active) marked.
 
-On any item in the draft the lead can change owner, date or status, or remove it. Each is one small form;
+On any item in the draft the lead can change owner, date or status, or remove it. The owner input suggests
+the known people and also takes free text. Each is one small form;
 the page reloads with the change in place and recorded (`review`, then `store`). Nothing here calls the
 model.
 

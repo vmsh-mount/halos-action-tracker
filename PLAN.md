@@ -53,7 +53,7 @@ Time budget: 3–5 hours, hard stop at 5.
 | R17 | The live provider is OpenRouter, key read from `OPENROUTER_API_KEY`. With a key set it is used; with none, the app runs on saved answers |
 | R18 | The interface has a replay implementation that returns saved responses, so tests and the demo run with no key and no spend |
 | R19 | The lead can also set an item's status directly, including finishing or cancelling it |
-| R20 | Everything the lead does (edits, removals, approvals) is recorded; a removed item is hidden, not deleted |
+| R20 | Everything the lead does on a day that is approved (edits, removals, the approval) is recorded; a removed item is hidden, not deleted. Edits on a discarded or re-run draft are not kept |
 
 ## 3. Milestones
 
@@ -109,6 +109,7 @@ halos-assignment/
   README.md
   .env.example
   docs/            design documents (section 6)
+  config/          team.json: people, glossary, ticket prefixes
   tasks/           one file per milestone: the work items and what counts as done
   progress/        one dated note per milestone: what was done, evidence, time spent, what's open
   transcripts/     2025-10-13.txt … 2025-10-17.txt (the practice set)
@@ -129,6 +130,7 @@ Written and approved in M1, before any implementation.
 | `docs/answer-key-five-standups.md` | Day by day, what a correct run of the given transcripts proposes, the supporting words, and the trap in each |
 | `docs/generalisation-beyond-the-five-standups.md` | Why nothing may be shaped around the given week: general behaviours, prompt principles, untested cases, property checks, the held-out set |
 | `docs/components-and-data-flow.md` | Components and how they connect, the LLM interface, storage, the review flow from draft to approved |
+| `docs/implementation-details.md` | Contracts an engineer codes against: state transitions, badges, validation tiers, input handling, code versus model, persistence, edge cases, the answer shape, limits. Lists contradictions between the other documents and open decisions |
 | `docs/evaluation-checks.md` | Which checks, what each one demonstrates, saved versus live |
 
 ## 7. Risks

@@ -1,6 +1,6 @@
 # Data models — everything stored besides the action item
 
-Status: **proposal for review** (second revision, after independent review). No code exists yet.
+Status: **approved**, with corrections from `implementation-details.md` sections 10 and 11 applied. No code exists yet.
 
 The action item itself is defined in `action-item-rules.md` section 2. This document covers the other shapes
 the system reads, produces and saves, and how they fit together in the one local file. How the parts of the
@@ -39,7 +39,8 @@ If no line in the text starts a speaker turn, the run stops with a message and n
 model. Otherwise the whole text would count as one turn and any quote would pass check C1.
 
 A stray "Note:" would still pass as a speaker. So any speaker who is not in the team settings is listed on
-the review page as "new speaker", where the lead can see a real newcomer (Rohan) or a mis-split.
+the review page as "new speaker" the first day they speak, where the lead can see a real newcomer (Rohan) or
+a mis-split. Once a day with that speaker is approved, the name is no longer new.
 
 ## 3. Team settings
 
@@ -73,7 +74,7 @@ The model's whole answer is `{changes: [...], not_tracked: [...]}`.
 | Field | In | Meaning | Example |
 |---|---|---|---|
 | `kind` | every change | `add` or `update` | `update` |
-| `ref` | add | A name for this new item within this answer only, so another add can point at it as its parent | `new1` |
+| `ref` | add, optional | A name for this new item within this answer only, so another add can point at it as its parent | `new1` |
 | `item_id` | update | Which existing item | `A5` |
 | `fields` | every change | Any of `title`, `owner`, `due_phrase`, `status`, `ticket`, `parent`, `note`. In an update: a value sets, an explicit empty clears, left out means unchanged | `{due_phrase: "Wednesday"}` |
 | `quotes` | every change | One to three runs of words from the transcript | `["export is going to slip", "Say Wednesday?"]` |
@@ -91,20 +92,23 @@ One per proposed change, after the checks in `action-item-rules.md` section 4.
 | Field | Meaning | Example |
 |---|---|---|
 | `proposed` | The proposed change, untouched | |
-| `outcome` | `applied`, `could_not_verify` or `discarded` (changed nothing) | `applied` |
+| `outcome` | `applied`, `could_not_verify`, `discarded` (changed nothing) or `not_tracked` (aimed at something the lead removed) | `applied` |
 | `item_id` | The item it landed on; for an add, the id code just gave it | `A14` |
 | `quotes` | Each quote with the turn and speaker code found it in | `{text: "Say Wednesday?", turn: 6, speaker: "Priya"}` |
 | `diffs` | What actually changed, field by field | `{field: "due", from: "2025-10-20", to: "2025-10-22"}` |
-| `change_labels` | What the page calls it. A list, because one change can do several things | Tuesday's auth update: `[re-dated, updated]` |
+| `change_labels` | What the page calls it. A list, because one change can do several things | Tuesday's auth update: `[dated, updated]` |
 | `flags` | Checks or date steps that fired, with the reason | `{rule: "D2", reason: "hedged: 'probably'"}` |
 | `failure` | Only when not applied: which check, and why | `{rule: "C1", reason: "quote not found in transcript"}` |
 
-Possible change labels: added, updated, closed, dropped, reopened, reassigned, re-dated.
+Possible change labels: added, updated, closed, dropped, reopened, blocked, unblocked, picked up, reassigned,
+unassigned, dated, re-dated, date cleared, removed. `implementation-details.md` section 1 says when each
+applies.
 
 `diffs` can differ from what the model asked for. The model says `due_phrase: "Wednesday"`; the diff records
 both the phrase and the date code worked out. Reopening adds a diff clearing the old date.
 
-**Order of work.** Code first gives an id to every `add` in the answer, then resolves `parent` links. An add
+**Order of work.** Code first gives an id to every `add` in the answer that passes check C1, then resolves
+`parent` links. A refused add consumes no id. An add
 can therefore name a parent that comes later in the same answer.
 
 ## 7. Review reasons (how a flag reaches the item)
@@ -124,7 +128,7 @@ An item's history is a list of these, oldest first.
 |---|---|---|
 | `date` | Standup date | 2025-10-16 |
 | `by` | `model` or `lead` | `model` |
-| `action` | For a lead entry: `edit`, `remove` or `approve` | `edit` |
+| `action` | For a lead entry: `edit`, `remove` or `approve`. When a parent is removed, each child gets a `remove` entry whose diff clears `parent` | `edit` |
 | `diffs` | Same shape as in a checked change | |
 | `quotes` | With turn and speaker; empty for a lead entry | |
 | `flags` | As above | |
@@ -153,10 +157,10 @@ over history entries. This removes a second copy of the same facts that would ha
 |---|---|
 | `standup` | Section 2 |
 | `state` | `draft` or `approved` |
-| `model_run` | Provider, model name, when, the raw answer, and the request fingerprint (section 11) |
+| `model_run` | Provider, model name, when, the request fingerprint (section 11), any notes from the LLM layer, and `attempts`: the raw answer of each attempt, one or two |
 | `checked_changes` | Section 6, in the order the model gave them |
-| `not_tracked` | The model's list, plus anything code moved here ("removed by lead") |
-| `new_speakers` | Speakers not in the team settings (section 2) |
+| `not_tracked` | The model's list, plus anything code moved here ("removed by lead"). An entry whose quote is not found in the transcript is kept and marked "quote not found" |
+| `new_speakers` | Speakers not in the team settings who have not spoken on an approved day (section 2) |
 | `items_after` | The full list as it stands after this day, including the lead's edits |
 | `approved_at` | Set on approval |
 
@@ -173,11 +177,11 @@ One JSON file, `data/state.json`.
 
 | Field | Meaning |
 |---|---|
-| `version` | Format number, starts at 1 |
+| `version` | Format number, starts at 1. A file with any other number is refused with a message |
 | `next_item_number` | Counter for ids. Moves forward only when a day is approved |
 | `days` | Approved day records, oldest first |
 | `draft` | The one day record still in review, or empty |
-| `last_failed_run` | The most recent failed model call, or empty |
+| `last_failed_run` | The most recent failed model call, or empty. Cleared by the next successful submit |
 
 There is no separate "current list". It is `items_after` of the last approved day, and that is what the
 model is shown for the next standup. A draft never touches it: approving appends the draft to `days`;
@@ -198,7 +202,7 @@ added) and `removed_on` (empty unless the lead removed it).
 | Field | Meaning |
 |---|---|
 | `lookup_key` | The standup date plus a short hash of the parsed turns (speaker and words, whitespace collapsed); this is what replay looks an answer up by, and the file's name |
-| `request_fingerprint` | A short hash of exactly what was sent to the model when the answer was recorded: the original request, not a retry |
+| `request_fingerprint` | A short hash of the instructions, input text and answer shape sent when the answer was recorded: the original request, not a retry. The model name is not part of it |
 | `provider`, `model`, `recorded_at` | Where the answer came from |
 | `answer` | The raw answer |
 
@@ -217,5 +221,5 @@ refers to the same ids); the warning is there for the case where it is not.
 |---|---|
 | Full copy of the list per day | Yes |
 | Statuses and hedge words | In code, one data module. `team.json` holds people, glossary, ticket prefixes only |
-| Replay matching | By date. Fingerprint kept; a mismatch shows a warning, it does not stop |
+| Replay matching | By lookup key: the date plus a hash of the parsed turns. A miss stops. Fingerprint kept; a mismatch shows a note, it does not stop |
 | Independent review, 12 points | All taken up: ids stable across re-runs (section 10), every stored change writes history (section 8), supporting words survive a lead edit, `ref` / `change_labels` naming, turn splitting (section 2), review reasons as a list (section 7), turn number in the example, parent order (section 6), date order (section 2), repeat edits (section 8), failed runs (section 9), lead action list replaced by history entries (section 8) |

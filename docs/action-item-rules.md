@@ -1,6 +1,6 @@
 # Action item rules — what an item is and how a standup changes the list
 
-Status: **proposal for review** (fourth revision). No code exists yet.
+Status: **approved**, with corrections from `implementation-details.md` sections 10 and 11 applied. No code exists yet.
 
 This document says what an action item is, what the model is asked to produce, how that output is checked,
 and what the system does when the conversation is unclear. Components, storage and the LLM interface are in
@@ -57,10 +57,11 @@ Choices:
   item (section 6).
 - **Parent link.** A review, a check or a retro belongs to another item. The link lets the page show them
   together. It carries no behaviour: closing a parent does not close its parts, and the other way round.
-- **One owner.** If two people are named, the item is flagged for the lead to pick. A second person's part
+- **One owner.** If two people are named and neither is clearly the one, the owner is left empty and the
+  item is flagged for the lead to pick. A second person's part
   (a review, a check) is its own item — see U14.
-- **Supporting words** shown for an item are the quotes from its most recent change, with the full history
-  one click away.
+- **Supporting words** shown for an item are the quotes from its most recent history entry that has any (a
+  lead edit has none, and does not hide them), with the full history one click away.
 
 ## 3. What the model returns
 
@@ -68,7 +69,7 @@ Two kinds of change, plus a list of things it chose not to track.
 
 | Kind | Contains |
 |---|---|
-| `add` | a `ref` naming it within this response only (`new1`, `new2`), title, and any of owner / due phrase / status / ticket / parent / note; quotes; optional needs-review reason |
+| `add` | optionally a `ref` naming it within this response only (`new1`, `new2`), title, and any of owner / due phrase / status / ticket / parent / note; quotes; optional needs-review reason |
 | `update` | the item's `id`, the fields that change; quotes; optional needs-review reason |
 | `not_tracked` | one quote and a short reason ("already done", "meeting, not an action", "small talk") |
 
@@ -97,8 +98,9 @@ The model never returns a calendar date.
 second form covers "I'll fix X" and "I'll review it" said in one standup, where the parent has no id yet.
 
 There is no separate "close", "reassign" or "re-date" kind. The page works those labels out from which field
-changed (status → done = *closed*, status → dropped = *dropped*, owner changed = *reassigned*, a closed
-status → an active one = *reopened*).
+changed and how: *closed*, *dropped*, *reopened*, *blocked*, *unblocked* for status; *picked up* (no owner →
+someone), *reassigned*, *unassigned* for owner; *dated* (first date), *re-dated*, *date cleared* for the due
+date; *updated* for anything else. The full table is in `implementation-details.md` section 1.
 
 ## 4. What code does with each change
 
@@ -107,9 +109,9 @@ status → an active one = *reopened*).
 | # | Check | If it fails |
 |---|---|---|
 | C1 | Every quote is found word for word inside one turn of today's transcript (ignoring case, spacing and quote-mark style), and at least one meets the length rule in section 3 | Change not applied; shown under "could not verify" |
-| C2 | An `update` points at an item that exists and was not removed by the lead | Not applied; shown under "could not verify" |
+| C2 | An `update` points at an item that exists | Not applied; shown under "could not verify". If the item exists but the lead removed it, the change is not applied and is listed under "not tracked" as "removed by lead" |
 | C3 | The owner is a known person (team list, anyone who speaks today, any existing owner) | Applied, flagged needs review |
-| C4 | An `add` names a ticket an existing item already has. Ticket ids are normalised first, so "231" matches PAY-231 when only one ticket has that number | Applied, flagged "possible duplicate of A2" |
+| C4 | An `add` names a ticket another item already has (an approved item, or an add earlier in this response). Ticket ids are normalised first, so "231" matches PAY-231 when only one ticket has that number | Applied, flagged "possible duplicate of A2". Not flagged when that item is the add's own parent: a review of PAY-231's fix may carry the ticket too. If the matching item was removed by the lead, the add is not applied and is listed under "not tracked" |
 | C5 | `parent` names a different item that exists and was not removed, or an `add` in this response that was itself applied | Applied without the link, flagged needs review |
 
 **Working out the date.** These steps run only when the change carries a `due_phrase`. A change with no
@@ -119,7 +121,7 @@ phrase leaves the item's date alone. The first step that matches decides.
 |---|---|---|---|---|
 | D1 | The phrase is not inside any of the quotes (a model error) | Existing date untouched | Not stored | Needs review |
 | D2 | Hedged or conditional: the sentence holding the phrase has a hedge word (maybe, probably, perhaps, possibly, might, hopefully, worst case) or a condition word (if, once, unless), or the phrase itself names two different days | Cleared, including any existing date | Stored | Needs review |
-| D3 | The phrase holds one day code can work out, and no day-shifting word. Days: today, tonight, tomorrow, a weekday name (the next one after the standup date), a written date; "this morning / afternoon / evening" and "end of day" mean today. Times of day are set aside first (morning, afternoon, after lunch). Other leftover words are ignored, so "Still Monday" and "Should be done tomorrow" work | Set | Stored | — |
+| D3 | The phrase holds one day code can work out, and no day-shifting word. Checked in this order: the stand-alone forms "this morning / afternoon / evening" and "end of day" mean today; then times of day are set aside (morning, afternoon, evening, after lunch); then the day: today, tonight, tomorrow, a weekday name (the next one after the standup date), a written date (day number with month name, with or without a year, or `YYYY-MM-DD`; with no year, the first such date on or after the standup). Other leftover words are ignored, so "Still Monday" and "Should be done tomorrow" work. Calendar days: weekends are not skipped | Set. If it equals the date the item already has, nothing changes | Stored, unless the date is unchanged | — |
 | D4 | The phrase has a day-shifting word (next, after, following, before, week, or), or no day code knows: "next Friday", "next week", "after this", "end of sprint" | Empty. If the item had a date, it is cleared | Stored | Only if a date was cleared |
 
 D1 and D2 look alike on the page but are different events. D1 is the model's mistake, so nothing it said
@@ -129,7 +131,7 @@ about the date is trusted and the old date stands. D2 is the speaker being unsur
 
 - **Reopening clears the date.** When a closed item (`done` or `dropped`) moves to an active status and the
   change sets no new date, the old date is cleared (it stays in history). Otherwise the item would return
-  already overdue.
+  already overdue. This wins over D1: a reopen whose phrase is not in the quotes still clears the date.
 - **Updates that change nothing are discarded.** "Still Monday" about an item already due Monday is not a
   change and is not shown as one.
 - **Removing a parent** leaves its parts on the list with the link cleared. The cleared link is recorded in
@@ -185,10 +187,10 @@ acceptable; the lead settles them on the page.
 | U14 | A review or check owed by a second person | Its own item once that person agrees, with `parent` set to the item it belongs to | Priya: "I'll look at Dev's PR after this." Also Friday: Rohan will send the draft to Priya, Priya: "Sure." | Soft |
 | U15 | Closing | Only on words that say it shipped or finished ("done", "deployed", "merged", "went out"). Silence never closes, and a passed due date never closes | Arjun's Falcon doc is never mentioned again → stays open | Firm |
 | U16 | Finished but being watched | `done`, with the caveat in `note` | "Search is merged, I'm watching the numbers" | Soft |
-| U17 | A statement about several items at once | One update per affected item, each quoting the same sentence. Affects that person's active items (not done, not dropped) that are due before the new date | "anything of hers rolls to Monday" → APP-402 to 20 Oct | Firm |
-| U18 | `open` or `in_progress` | `in_progress` only when the owner reports working on it; otherwise `open` | "Search, still on it." → in_progress; "I'm picking up the Hermes retry bug" → either | Soft |
+| U17 | A statement about several items at once | One update per affected item, each quoting the same sentence. Affects that person's active items (not done, not dropped) that are due before the new date. This is the one place the model compares dates | "anything of hers rolls to Monday" → APP-402 to 20 Oct | Firm |
+| U18 | `open` or `in_progress` | `in_progress` only when the owner reports working on it; otherwise `open`. Work that was blocked and is now unblocked but unfinished is `in_progress` | "Search, still on it." → in_progress; "I'm picking up the Hermes retry bug" → either | Soft |
 | U19 | The team cancels work | `dropped`, only on words that say so. The item stays on the list | No case in the five days. Invented: "Let's not do the export after all, sales don't need it" | Firm |
-| U20 | A promise that depends on something else happening | Item, with the condition in `note`, no date, needs review. The model returns the date expression as said, condition included; date step D2 gives it no date | No case in the five days. Invented: "If the cert lands, I'll deploy tomorrow" | Firm |
+| U20 | A promise that depends on something else happening | Item, with the condition in `note`, no date, needs review. The model returns the day as it would for any date; date step D2 sees the condition word in the sentence and gives it no date | No case in the five days. Invented: "If the cert lands, I'll deploy tomorrow" | Firm |
 | U21 | A speaker corrects themselves | The corrected value is the one used, for an owner, a date or a status. For a date the model returns the corrected expression; if it returns both, date step D2 clears the date and asks the lead | No case in the five days. Invented: "Tuesday. Sorry, not Tuesday, Thursday" | Firm |
 
 ## 6. What the lead does
@@ -204,9 +206,11 @@ acceptable; the lead settles them on the page.
 - **Run the same day again** before approving replaces the draft, including any edits made to it; the page
   warns first.
 
-Overdue items (due date passed, still active) are marked on the page. This is display only; nothing changes.
+Overdue items (due date earlier than the standup date of the day shown, still active) are marked on the page.
+This is display only; nothing changes.
 
-**Everything the lead does is recorded.** Each edit, removal and approval is kept with the standup date, the
+**Everything the lead does on a day that ends up approved is recorded.** Edits on a draft that is discarded
+or run again are lost with it. Each edit, removal and approval is kept with the standup date, the
 item, the field, the value the system had proposed and the value the lead chose. A removed item is hidden
 from the list, not deleted: it is kept whole, with its quotes, its history and any edits the lead made to
 it before removing it. Nothing uses this record yet. It is the raw material for later measuring where the
@@ -253,4 +257,4 @@ meeting, who is staffed on Falcon, "Don't deploy on Friday".
 | Second independent review, 9 points | Eight taken up: hedge versus model error on dates (D1, D2), date steps run only when a phrase is given (section 4), quote floor allows a short whole turn (section 3), parent may name a same-day item and survives parent removal (section 3, C5), "discarded" for no-op updates, the two-days gap stated, grammar, and the model returning only the phrase. One needed no change: PLAN.md already listed status as editable |
 | Short promises as their own items (U13, U14) | Yes |
 | Hedged dates (U8) | Date left empty and handed to the lead. General principle stated at the top of section 5 |
-| Independent review, 12 points | All taken up: quote shape (section 3, C1, C3), flags after approval (section 7), missing Friday item (A14, U13), date cleared on reopen (U5), "not done" in U17, clearing and no-op updates (sections 3, 4), hedge check in code (C5), "after this" gives no date (C4, U9, A8), meeting versus action (U11), soft markers (section 7), ticket normalising and the duplicate gap stated (C7, section 4), ordering and column header |
+| Independent review, 12 points | All taken up: quote shape (section 3, C1, now D1), flags after approval (section 7), missing Friday item (A14, U13), date cleared on reopen (U5), "not done" in U17, clearing and no-op updates (sections 3, 4), hedge check in code (now D2), "after this" gives no date (now D4, U9, A8), meeting versus action (U11), soft markers (section 7), ticket normalising and the duplicate gap stated (now C4, section 4), ordering and column header |

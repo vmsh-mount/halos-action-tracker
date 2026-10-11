@@ -78,7 +78,8 @@ Eight of the 30 are not shown, or only partly shown, by the week (G2, G4, G9, G1
    work, is written fresh and not adapted from a practice line, and no two share a shape. At least one
    example shows "nothing to track here".
 4. **The model does only what needs judgment, and is told the rest of the contract.** It does not compute
-   dates or give ids; the prompt says code does those. It *is* told the quote rules (G28) and the answer
+   dates or give ids; the prompt says code does those. The one exception is a statement about a group of
+   items (G24), where it has to judge which of a person's items fall before the new date. It *is* told the quote rules (G28) and the answer
    shape, because it has to follow them even though code checks them.
 5. **Restraint is asked for outright.** When unsure: leave the field empty, give the reason, let the lead
    decide. An empty field is a correct answer.
@@ -145,7 +146,8 @@ any transcript a reviewer pastes in.
   lead. (Approval clears the mark, so this is checked on the draft.)
 - An item's fields equal its history replayed.
 - An item is closed only by a change that has a quote, or by the lead.
-- Ids are unique and the list never loses an item except by removal.
+- Ids are unique, and an approved id never disappears from later days. (A removed item is hidden, not
+  deleted.)
 
 **Per-case properties.** Written against the behaviour.
 

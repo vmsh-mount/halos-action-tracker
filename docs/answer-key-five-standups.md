@@ -41,7 +41,7 @@ Six items after Monday. Two carry review reasons (A1, A4), cleared on approval.
 | Add **A7** Atlas login slow | Owner Dev. Open. No date | Dev: "someone pinged me about the Atlas login being slow." and "I'll look after." | Folding it into A2 on the strength of "Might be related to 231, might not" |
 | Add **A8** † Review Dev's PAY-231 PR | Owner Priya. Part of A2. **No date** | Priya: "I'll look at Dev's PR after this." | A date from "after this". Also a duplicate if both Dev's request and Priya's promise become items |
 | Update **A3** | Note: infra says cert tomorrow morning. Still blocked. **No date** | Sana: "They say the cert will be done tomorrow morning." | 15 Oct as the due date. It is infra's estimate for their work, not Sana's commitment. **Code cannot catch this**: "tomorrow morning" is a plain, unhedged day |
-| **A5**: nothing | No change shown ("Still Monday" is still 20 Oct) | Priya: "Export's going fine. Still Monday." | A second export item, or a "re-dated" entry for a date that did not move |
+| **A5**: no date change | "Still Monday" is still 20 Oct, so the date does not show as changed. A note or status update from "going fine" is acceptable | Priya: "Export's going fine. Still Monday." | A second export item, or a "re-dated" entry for a date that did not move |
 
 Eight items after Tuesday.
 
@@ -57,7 +57,7 @@ Eight items after Tuesday.
 | Update **A3** | **Done** | Sana: "Hermes staging deploy went out this morning, all green." | Staying blocked. It goes blocked → done with no step between |
 | Add **A10** Send Falcon doc | Owner Arjun. Due **15 Oct**, phrase "tonight" | Priya: "Is there a doc or anything?" Arjun: "I'll send something tonight." | Skipped: four words, and "something" only makes sense with Priya's question |
 | Not tracked: Falcon kickoff | No item | Arjun: "Falcon kickoff is Thursday, two pm." | An item due Thursday. It is a meeting with a time already set |
-| **A5**: nothing | No change shown | Priya: "The Atlas export is still on for Monday." | **The duplicate the brief warns about.** First time it is called "Atlas export"; there is no ticket, so code cannot notice a new item |
+| **A5**: no date change | The date does not show as changed | Priya: "The Atlas export is still on for Monday." | **The duplicate the brief warns about.** First time it is called "Atlas export"; there is no ticket, so code cannot notice a new item |
 
 Ten items after Wednesday.
 
