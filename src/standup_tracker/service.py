@@ -117,5 +117,6 @@ def submit_standup(
         fingerprint=proposal.fingerprint,
         notes=proposal.response.notes,
         attempts=proposal.attempts,
+        usage=proposal.response.usage,
     )
     return build_draft(state, standup, proposal.changes, proposal.not_tracked, team, model_run=run)

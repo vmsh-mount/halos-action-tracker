@@ -23,9 +23,9 @@ References: **flow** = `docs/components-and-data-flow.md`, **impl** = `docs/impl
 
 | # | Item | Done |
 |---|---|---|
-| 8 | One call on Monday to confirm the endpoint, the model name and that the answer can be read | [ ] |
-| 9 | The five days once with the Recorder; answers committed under `tests/saved_answers/` | [ ] |
-| 10 | Per-day properties on the saved answers (hard asserts, and expected failures where the recording misses) | [ ] |
+| 8 | One call on Monday to confirm the endpoint, the model name and that the answer can be read | [x] |
+| 9 | The five days once with the Recorder; answers committed under `tests/saved_answers/` | [x] |
+| 10 | Per-day properties on the saved answers (hard asserts, and expected failures where the recording misses) | [x] |
 
 Model: `openai/gpt-5-mini`, chosen by the owner; may change later.
 

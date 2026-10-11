@@ -65,7 +65,70 @@ entirely untested until Part B.
 - **JSON mode, not strict schema**: the client asks for a JSON object and the instructions describe the
   shape. An endpoint that rejects `response_format` would fail with a clear error; not handled further.
 
+## Part B (live) — done
+
+Six calls to `openai/gpt-5-mini` through OpenRouter on 2026-10-11, as approved: one on Monday to confirm the
+endpoint, then the five days once with the Recorder. All six answered on the first attempt, in 19 to 39
+seconds each. The key was read from the shell profile at run time and was not printed or written to disk.
+
+The five answers are committed under `tests/saved_answers/`, unedited. They were recorded once; the Monday
+confirmation call was a separate run and is not the saved one.
+
+### What the one recorded run got right
+
+Checked by `tests/test_practice_saved_answers.py` (39 checks pass, 3 are expected failures):
+
+- **No change was refused** for an unfound quote: zero C1 refusals across 26 proposed changes.
+- **No duplicates.** The auth bug stayed one item under "the auth bug", "PAY-231", "231" and "Auth", was
+  closed, reopened and closed again. The export stayed one item; "Atlas export" on Wednesday did not add a
+  second.
+- **Owners.** The auth bug went to the person who took it, not the one who offered. The onboarding doc had no
+  owner until Thursday, then the intern, who is not in the team settings.
+- **Dates.** Export 20 Oct, then 22 Oct. The hedged search fix had no date on Monday or Tuesday and was
+  marked. The retry bug moved from 17 to 20 Oct on "anything of hers rolls to Monday".
+- **Nothing made up.** No item from the customer reply, the kickoff meeting, the introduction, the staffing
+  note or the sign-off. Every item belongs to a piece of work in the answer key. 11 items, inside the 10 to
+  14 the soft rules allow.
+- **The lead's review carries forward** (two of the 39, replaying with an edit made on Monday): a corrected
+  owner survives Tuesday's update to the same item, and a removed item stays out when Thursday and Friday
+  return to it.
+
+### What it got wrong
+
+Four misses. The first three are each marked as an expected failure with its reason, so `pytest` is green
+and the miss is printed. The fourth is on a soft outcome and has no check:
+
+| Miss | Day | What happened |
+|---|---|---|
+| Another team's estimate taken as our date | Tue | "They say the cert will be done tomorrow morning" set 15 Oct on the staging deploy. Predicted in the rules document as something only the model can avoid |
+| A day attached to the wrong work | Wed | The reviewer's "I'll review the search PR today" set 15 Oct on the search fix itself. The separate review item (soft) was not created |
+| A skipped item | Fri | "We should do a retro on that one next week" produced nothing |
+| A wrong parent link | Fri | The review of the Falcon schema draft was linked as a part of "send the Falcon kickoff doc". They share a project name and nothing else. Parent links are soft, so no check fails, but the link is wrong and will show on the review page |
+
+The search-fix check was added after seeing this run. It is taken from the reference week, which gives that
+item no date, and it counts against the run, not for it.
+
+### What this does and does not show
+
+- It is **one run**. Nothing here says how often the model gets each property right; that is the three
+  repeats in M5. The Monday confirmation call differed from the recorded Monday in wording, statuses and
+  item order, so run-to-run variation is real.
+- The prompt was **not changed** after seeing these results. The saved answers match the committed prompt:
+  a test fails if they drift.
+- **Cost was not measured.** These six calls did not record token counts. The estimate before the run was
+  about $0.10; the provider's dashboard has the real figure. Token counts are stored with each run from now
+  on (`model_run.usage`), so later live runs can report their own.
+
+`pytest`: **256 passed, 3 expected failures**, 0.6 s, no key, no network.
+`python -m standup_tracker run-week transcripts` with no key replays the five days from the saved answers.
+
 ## Open
 
-- Part B needs a go-ahead with a cost figure before the first live call.
+- **Decided: the misses are left as they are.** The prompt is not changed for them. It already states the
+  rule for another team's estimate and for small promises, so more wording would be wording for one practice
+  line. One run says nothing about how often they happen; the three repeats in M5 will.
+- **Frozen from here**, because the saved answers are tied to them: the prompt template, the format of the
+  item lines in `prompt.py`, and what the engine produces for an earlier day. Changing any of them turns
+  `test_saved_answers_match_the_current_prompt_and_list` red, and the only fix is to record again, which
+  costs calls and gives a new single sample with different misses.
 - Not committed.

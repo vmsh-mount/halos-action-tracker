@@ -141,3 +141,14 @@ def test_the_week_through_submit_matches_the_week_through_the_engine(team):
     direct = run_week(team)
     strip = lambda item: item.model_dump(mode="json")
     assert [strip(i) for i in state.days[-1].items_after] == [strip(i) for i in direct.days[-1].items_after]
+
+
+def test_token_counts_reported_by_the_provider_are_kept_with_the_run(team):
+    class Counted(Answers):
+        def complete(self, request):
+            response = super().complete(request)
+            response.usage = {"prompt_tokens": 3100, "completion_tokens": 900}
+            return response
+
+    draft = submit(State(), team, WEEK[0], Counted())
+    assert draft.model_run.usage == {"prompt_tokens": 3100, "completion_tokens": 900}

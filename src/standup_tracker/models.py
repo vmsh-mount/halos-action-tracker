@@ -126,6 +126,7 @@ class ModelRun(Base):
     fingerprint: str = ""
     notes: list[str] = []
     attempts: list[str] = []
+    usage: dict[str, Any] = {}  # token counts as the provider reported them; empty for a replayed answer
 
 
 class DayRecord(Base):
