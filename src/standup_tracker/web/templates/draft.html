@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% import "_parts.html" as parts %}
+{% block title %}Review {{ draft.standup.date | day }}{% endblock %}
+
+{% block bar %}
+<div class="reviewbar" role="region" aria-label="Review pending">
+  <div class="reviewbar-inner">
+    <div>
+      <h1><span class="chip pending">Review pending</span>
+        Update for {{ draft.standup.date.strftime("%A") }} {{ draft.standup.date.day }} {{ draft.standup.date.strftime("%B %Y") }}</h1>
+      <div class="summary">
+        {% set parts_ = [] %}
+        {%- if n_new %}{% set _ = parts_.append("<b>%d</b> new" % n_new) %}{% endif %}
+        {%- if n_changed %}{% set _ = parts_.append("<b>%d</b> changed" % n_changed) %}{% endif %}
+        {%- if attention %}{% set _ = parts_.append("<b>%d</b> need%s attention" % (attention | length, "s" if attention | length == 1 else "")) %}{% endif %}
+        {%- if refused %}{% set _ = parts_.append("<b>%d</b> not applied" % (refused | length)) %}{% endif %}
+        {{ parts_ | join(" · ") | safe if parts_ else "No changes proposed" }}
+        <span class="faint">· Nothing is saved to tracked work until you approve.</span>
+      </div>
+    </div>
+    <div class="actions">
+      <form method="post" action="/discard" data-confirm="Discard this update? The proposed changes and any edits you made will be lost. Tracked work stays as it was.">
+        <button type="submit">Discard update</button>
+      </form>
+      <form method="post" action="/approve"><button class="primary" type="submit">{{ parts.icon("i-check") }}Approve changes</button></form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<datalist id="people">{% for name in people %}<option value="{{ name }}">{% endfor %}</datalist>
+
+{% for note in (draft.model_run.notes if draft.model_run else []) %}
+  <div class="notice {{ 'warn' if 'different list' in note else 'info' }}">{{ parts.icon("i-info") }}<span>{{ note | run_note }}</span></div>
+{% endfor %}
+{% if draft.new_speakers %}
+  <div class="notice info">{{ parts.icon("i-info") }}<span>New name{{ "" if draft.new_speakers | length == 1 else "s" }} in this update:
+    <b>{{ draft.new_speakers | join(", ") }}</b>. {{ "They aren’t" if draft.new_speakers | length > 1 else "This person isn’t" }} in team settings yet, so check the name was read correctly.</span></div>
+{% endif %}
+
+<div class="stack">
+  {% if attention %}
+  <section aria-labelledby="h-attention">
+    <div class="section-head"><h2 id="h-attention">{{ parts.icon("i-alert") }}Needs attention <span class="count">{{ attention | length }}</span></h2>
+      <span class="tiny muted">The conversation left something open. Edit the item or keep it as proposed; either settles it.</span></div>
+    <div class="group attention">{% for row in attention %}{{ parts.change(row, statuses) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  {% if new %}
+  <section aria-labelledby="h-new">
+    <div class="section-head"><h2 id="h-new">New <span class="count">{{ new | length }}</span></h2></div>
+    <div class="group">{% for row in new %}{{ parts.change(row, statuses) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  {% if updated %}
+  <section aria-labelledby="h-changed">
+    <div class="section-head"><h2 id="h-changed">Changed <span class="count">{{ updated | length }}</span></h2></div>
+    <div class="group">{% for row in updated %}{{ parts.change(row, statuses) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  {% if not attention and not new and not updated %}
+  <section>
+    <div class="group"><div class="empty"><h3>No changes proposed</h3>
+      <p>This update didn’t add or change any tracked work. Approve it to record the day, or discard it.</p></div></div>
+  </section>
+  {% endif %}
+
+  {% if removed %}
+  <section aria-labelledby="h-removed">
+    <div class="section-head"><h2 id="h-removed">Removed by you <span class="count">{{ removed | length }}</span></h2></div>
+    <div class="group">{% for row in removed %}{{ parts.change(row, statuses) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  {% if mentions %}
+  <section aria-labelledby="h-mentions">
+    <div class="section-head"><h2 id="h-mentions">Mentioned, no change <span class="count">{{ mentions | length }}</span></h2>
+      <span class="tiny muted">These came up but stayed as they were.</span></div>
+    <div class="group">
+      {% for item, quotes in mentions %}
+        <article class="change"><div>
+          <div class="change-head"><span class="id">{{ item.id }}</span><a class="title" href="/items/{{ item.id }}">{{ item.title }}</a></div>
+          {{ parts.evidence(quotes) }}
+        </div></article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if refused %}
+  <section aria-labelledby="h-refused">
+    <div class="section-head"><h2 id="h-refused">Not applied <span class="count">{{ refused | length }}</span></h2>
+      <span class="tiny muted">Proposed by the model, but they couldn’t be verified against the transcript.</span></div>
+    <div class="group">
+      {% for change in refused %}
+        <article class="change"><div>
+          <div class="change-head"><span class="title">{{ (change.proposed.fields or {}).get("title") or change.proposed.item_id or "Proposed change" }}</span></div>
+          <p class="small muted" style="margin-top:4px">{{ change.failure.reason }}</p>
+          {% if change.proposed.quotes is iterable and change.proposed.quotes is not string %}
+            <ul class="evidence">{% for text in change.proposed.quotes %}<li>“{{ text }}”</li>{% endfor %}</ul>
+          {% endif %}
+        </div></article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if draft.not_tracked %}
+  <section aria-labelledby="h-nottracked">
+    <div class="section-head"><h2 id="h-nottracked">Mentioned, not tracked <span class="count">{{ draft.not_tracked | length }}</span></h2>
+      <span class="tiny muted">Heard in the update and left out on purpose.</span></div>
+    <div class="group">
+      <ul class="plain-list">
+        {% for entry in draft.not_tracked %}
+          <li class="small">“{{ entry.quote }}” <span class="muted">— {{ entry.reason }}{{ "" if entry.quote_found else " (these words weren’t found in the transcript)" }}</span></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+
+  <section aria-labelledby="h-after">
+    <div class="section-head"><h2 id="h-after">Tracked work after approval <span class="count">{{ listed | length }}</span></h2>
+      <span class="tiny muted">Any item can be edited before you approve.</span></div>
+    {{ parts.work_table(listed, statuses, overview, true) }}
+  </section>
+
+  <section>
+    <details class="plain">
+      <summary>Reprocess this update with a corrected transcript</summary>
+      <p class="small muted" style="margin:8px 0 12px">This replaces the proposed changes above, including any edits you’ve made.</p>
+      {{ parts.composer({"date": draft.standup.date.isoformat(), "text": form.text or draft.standup.text}, true, mode,
+          "Reprocess update", "The current proposal will be replaced.", "") }}
+    </details>
+  </section>
+</div>
+{% endblock %}

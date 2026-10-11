@@ -203,8 +203,10 @@ acceptable; the lead settles them on the page.
   new words in a new transcript.
 - **Remove.** Means "this was never an action item". The item leaves the list, and the model is told not to
   add it again. If it comes up later it appears under "not tracked" with the reason "removed by lead".
-- **Approve.** The draft becomes that day's approved list, and every needs-review flag on it is cleared: the
-  lead has seen it. The next day cannot be processed until this happens.
+- **Settle a flagged item.** An edit that changes a flagged item clears its review reasons, and so does
+  choosing to keep it as proposed. Either way the lead has dealt with it.
+- **Approve.** The draft becomes that day's approved list, and every needs-review flag still on it is cleared:
+  the lead has seen it. The next day cannot be processed until this happens.
 - **Run the same day again** before approving replaces the draft, including any edits made to it; the page
   warns first.
 

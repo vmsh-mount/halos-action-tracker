@@ -92,7 +92,7 @@ def submit_standup(
     """Transcript in, draft out. On any failure no draft is made and an existing draft is left as it was."""
     check_can_submit(state, date, confirm_rerun=confirm_rerun)
     if not text.strip():
-        raise SubmitError("The transcript is empty.")
+        raise SubmitError("The transcript is empty. Paste it or choose a file.")
     try:
         standup = make_standup(date, text)
     except NoSpeakerTurns as error:

@@ -42,7 +42,7 @@ def test_editing_the_same_field_twice_keeps_one_entry_with_the_system_value(mond
 def test_a_typed_owner_outside_the_team_is_accepted_without_a_flag(monday, team):
     review.edit_item(monday, "A4", team, owner="Meera")
     item = by_id(monday.draft.items_after)["A4"]
-    assert item.owner == "Meera" and item.review_reasons == ["Raised, deferred, no decision"]
+    assert item.owner == "Meera" and item.review_reasons == []  # dealt with by the lead; no new flag for the name
 
 
 def test_invalid_edits_are_refused(monday, team):
@@ -211,3 +211,29 @@ def test_the_lead_undoing_a_close_the_model_made_today_keeps_the_date(team):
     submit(state, team, WEEK[3], key_answer(WEEK[3]))  # Thursday: the model closes the search PR review
     review.edit_item(state, "A9", team, status="open")
     assert by_id(state.draft.items_after)["A9"].due == dt.date(2025, 10, 15)
+
+
+def test_dealing_with_a_flagged_item_settles_it_before_approval(monday, team):
+    search = by_id(monday.draft.items_after)["A1"]  # hedged date: no date set, marked for the lead
+    assert search.review_reasons == ["hedged: 'maybe'"]
+    review.edit_item(monday, "A1", team, due=dt.date(2025, 10, 14))
+    assert search.review_reasons == [] and search.due == dt.date(2025, 10, 14)
+    assert [(e.action, [d.field for d in e.diffs]) for e in search.history if e.by == "lead"] == [
+        ("edit", ["due", "due_phrase"]), ("reviewed", ["review_reasons"])]
+    assert items_mod.replay(search) == items_mod.current(search)
+
+
+def test_a_flagged_item_can_be_kept_as_proposed(monday, team):
+    flaky = by_id(monday.draft.items_after)["A4"]
+    review.mark_reviewed(monday, "A4")
+    assert flaky.review_reasons == [] and flaky.owner is None
+    review.mark_reviewed(monday, "A4")  # a second press changes nothing
+    assert len([e for e in flaky.history if e.by == "lead"]) == 1
+    review.approve(monday)
+    assert [e.action for e in flaky.history if e.by == "lead"] == ["reviewed"]  # approval had nothing left to clear
+
+
+def test_an_edit_that_changes_nothing_does_not_settle_a_flag(monday, team):
+    search = by_id(monday.draft.items_after)["A1"]
+    review.edit_item(monday, "A1", team, owner=search.owner, due=search.due, status=search.status)
+    assert search.review_reasons == ["hedged: 'maybe'"]

@@ -67,9 +67,19 @@ def main(argv: list[str] | None = None) -> int:
     week.add_argument("folder")
     week.add_argument("--record", action="store_true", help="save the model's answers for replay")
     commands.add_parser("reset", help="delete the saved state")
+    serve = commands.add_parser("serve", help="start the review page")
+    serve.add_argument("--port", type=int, default=8000)
     args = parser.parse_args(argv)
 
     settings = load_settings()
+    if args.command == "serve":
+        import uvicorn
+
+        from .web.app import create_app
+
+        print(f"Review page: http://127.0.0.1:{args.port}")
+        uvicorn.run(create_app(settings), host="127.0.0.1", port=args.port, log_level="warning")
+        return 0
     if args.command == "reset":
         settings.state_file.unlink(missing_ok=True)
         print(f"Deleted {settings.state_file}.")

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "_parts.html" as parts %}
+{% block title %}{{ item.id }} {{ item.title }}{% endblock %}
+{% block body %}
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Tracked work</a>{{ parts.icon("i-chevron") }}<span>{{ item.id }}</span></nav>
+
+<div class="page-head">
+  <div>
+    <h1>{{ item.title }}</h1>
+    {{ parts.facts(item, row.overdue) }}
+  </div>
+  <div class="actions">
+    {% if item.removed_on %}<span class="chip overdue">Removed {{ item.removed_on | day }}</span>{% endif %}
+    {% if row.overdue %}<span class="chip overdue">Overdue</span>{% endif %}
+    {% if pending %}<a class="chip pending" href="/">Review pending</a>{% endif %}
+  </div>
+</div>
+{% if item.note %}<p class="muted" style="margin-bottom:16px">{{ item.note }}</p>{% endif %}
+
+<section aria-labelledby="h-activity">
+  <div class="section-head"><h2 id="h-activity">Activity <span class="count">{{ entries | length }}</span></h2></div>
+  <div class="group">
+    <ol class="timeline">
+      {% for entry in entries | reverse %}
+        <li>
+          <div class="when">{{ entry.entry.date | day }}<div class="tiny faint">{{ "You" if entry.entry.by == "lead" else "Team update" }}</div></div>
+          <div>
+            <div class="change-head">{% for label in entry.labels %}<span class="chip {{ 'new' if label == 'added' }} {{ 'done' if label == 'closed' }}">{{ label | label }}</span>{% endfor %}
+              {% if entry.entry.action in ("approve", "reviewed") %}<span class="chip">Reviewed</span>{% endif %}</div>
+            {% if entry.steps %}{{ parts.diff(entry.steps) }}{% endif %}
+            {% for flag in entry.entry.flags %}<div class="callout">{{ parts.icon("i-alert") }}<span>{{ flag.reason | reason }}</span></div>{% endfor %}
+            {{ parts.evidence(entry.entry.quotes) }}
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endblock %}

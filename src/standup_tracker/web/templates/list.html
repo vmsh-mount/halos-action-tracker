@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "_parts.html" as parts %}
+{% block body %}
+<div class="page-head">
+  <div>
+    <h1>Tracked work</h1>
+    <div class="sub">
+      {% if last %}
+        Latest update: {{ last.standup.date.strftime("%A") }} {{ last.standup.date.day }} {{ last.standup.date.strftime("%B") }}
+        <span class="chip done">{{ parts.icon("i-check") }}Approved</span>
+        <span class="faint">· {{ days | length }} update{{ "" if days | length == 1 else "s" }} processed</span>
+      {% else %}
+        Commitments, owners and due dates from your team’s updates, kept current.
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if failed and not error %}
+  <div class="notice warn">{{ parts.icon("i-alert") }}<span>The update for {{ failed.date | day }} couldn’t be processed, and nothing was changed. {{ failed.error }}</span></div>
+{% endif %}
+
+<div class="stack">
+  {% if last %}<section>{{ parts.overview(overview) }}</section>{% endif %}
+
+  <section aria-label="Process a team update">
+    {{ parts.composer(form, ask_rerun, mode,
+        "Process the next team update" if last else "Process your first team update",
+        "Paste a standup or sync transcript to update tracked work.",
+        "Process update") }}
+  </section>
+
+  <section aria-labelledby="work-heading">
+    <div class="section-head"><h2 id="work-heading">Tracked work <span class="count">{{ listed | length }}</span></h2></div>
+    {{ parts.work_table(listed, statuses, overview) }}
+    {% if last %}<p class="tiny muted" style="margin-top:8px">This is the approved list. To correct an item, process the next update and edit it during review.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}

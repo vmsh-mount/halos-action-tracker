@@ -132,7 +132,7 @@ An item's history is a list of these, oldest first.
 |---|---|---|
 | `date` | Standup date | 2025-10-16 |
 | `by` | `model` or `lead` | `model` |
-| `action` | For a lead entry: `edit`, `remove` or `approve`. When a parent is removed, each child gets a `remove` entry whose diff clears `parent` | `edit` |
+| `action` | For a lead entry: `edit`, `remove`, `reviewed` (the lead settled a flagged item) or `approve`. When a parent is removed, each child gets a `remove` entry whose diff clears `parent` | `edit` |
 | `diffs` | Same shape as in a checked change | |
 | `quotes` | With turn and speaker; empty for a lead entry | |
 | `flags` | As above | |

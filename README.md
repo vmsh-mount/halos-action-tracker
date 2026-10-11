@@ -7,12 +7,7 @@ Status: in progress. See [PLAN.md](PLAN.md) for scope, requirements and mileston
 
 ## How to run
 
-_To be written (M2–M4)._
-
-Model access goes through any chat-completions API; OpenRouter is the one used here. Copy `.env.example` to
-`.env` and set `LLM_API_KEY` (and `LLM_BASE_URL`, `LLM_MODEL` if you want others than the defaults there). Tests and the replay demo need no key.
-
-## How to run the tests
+Python 3.11 or later.
 
 ```bash
 python3 -m venv .venv
@@ -26,12 +21,45 @@ python3 -m venv .venv
 .venv/bin/pip install -e .
 ```
 
+Start the review page, then open http://127.0.0.1:8000:
+
+```bash
+.venv/bin/python -m standup_tracker serve
+```
+
+**With no API key** the app replays saved model answers, so it works offline for the five standups in
+`transcripts/`: paste Monday's file with the date 2025-10-13, review, approve, then Tuesday, and so on. A
+transcript it has no saved answer for is refused with a message saying a key is needed.
+
+**With a key** it reads any transcript with a live model:
+
+```bash
+cp .env.example .env
+```
+
+then set `LLM_API_KEY` in `.env`. `LLM_BASE_URL` and `LLM_MODEL` are already filled in for OpenRouter and
+`openai/gpt-5-mini`; any chat-completions endpoint and model can be named instead. `.env` is git-ignored.
+
+The same steps from the command line:
+
+```bash
+.venv/bin/python -m standup_tracker run-week transcripts
+```
+
+Other commands: `process <file> --date YYYY-MM-DD`, `approve`, `discard`, `show`, `reset`. State is kept in
+`data/state.json`; `reset` deletes it.
+
+## How to run the tests
+
+After the install steps above:
+
 ```bash
 .venv/bin/python -m pytest
 ```
 
-No API key and no network are needed. So far the tests cover the list engine only, with no model involved;
-tests on saved and live model answers are still to come (M3, M5).
+No API key and no network are needed. Tests that involve a model use saved answers, recorded once from
+`openai/gpt-5-mini`; three properties that recorded run got wrong are marked as expected failures and are
+printed with `-rx`. Results against a live model are still to come (M5).
 
 ## Important choices and why
 

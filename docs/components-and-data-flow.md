@@ -151,6 +151,11 @@ re-run fails at any step before 8, the existing draft is left as it was.
 
 ### 4.2 The lead reviews
 
+*The interface was redesigned after this was written. It now calls a standup a "team update", the list
+"tracked work", and orders the review as: needs attention, new, changed, removed by you, mentioned with no
+change, not applied, mentioned and not tracked, then the list after approval. The behaviour below is
+unchanged; `progress/M4-review-page.md` describes the current page.*
+
 The page shows, top to bottom:
 
 1. Notes, if any: new speakers, or a saved answer recorded against a different list.

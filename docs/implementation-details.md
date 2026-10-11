@@ -144,7 +144,7 @@ owner → ticket → due (D1–D4) → status (reopen rule reads the due result)
 | Badge | On | Stored or derived | Appears when | Goes away when |
 |---|---|---|---|---|
 | Change labels (§1) | Item row, today | Stored in the checked change; recomputable from diffs | A change is applied | The day is no longer the one shown |
-| Needs review + reasons | Item | Stored: `review_reasons` | Any flag below fires on an applied change, or the model supplies `review_reason` | Approval, and only approval. Fixing the field a reason is about does not clear it [O 3] |
+| Needs review + reasons | Item | Stored: `review_reasons` | Any flag below fires on an applied change, or the model supplies `review_reason` | When the lead deals with the item: an edit that changes something, or "keep as proposed". Approval clears whatever is left [O 3] |
 | Overdue | Item | Derived | `due` strictly earlier than the standup date of the day shown, and status active. The clock is not used [O 10] | Never stored |
 | Blocked | Item | Derived from status | Status is `blocked` | Status changes |
 | Possible duplicate of *id* | Item | A review reason (C4) | An add's ticket matches another item's, and that item is not the add's parent [O 6] | Approval |
@@ -480,7 +480,7 @@ the set run once after the freeze (gen §6). "None" = stated in the README only.
 |---|---|---|
 | O 1 | Change labels beyond those in the documents | All used: added, updated, closed, dropped, reopened, picked up, reassigned, unassigned, dated, re-dated, date cleared, blocked, unblocked, removed |
 | O 2 | Is a speaker outside team settings "new" every day | First day only |
-| O 3 | Does fixing a field clear the review reason about it | No. Only approval clears |
+| O 3 | Does fixing a field clear the review reason about it | **Reversed after seeing the page.** First decided as "no, only approval clears". On the review page that left an item under "Needs attention", warning still showing, after the lead had set the date it asked about. Now any lead edit that changes the item clears its review reasons, and the lead can also keep a flagged item as proposed, which clears them too. Each writes a history entry with action `reviewed`. Approval still clears anything left |
 | O 4 | Owner edit on the page | One input: suggests known people, accepts free text. Never flagged |
 | O 5 | Written dates and weekends | Day number with month name in either order, optional year, or `YYYY-MM-DD`. No year: first such date on or after the standup. Numeric forms give no date. Calendar days; weekends not skipped |
 | O 6 | Ticket matching | No flag when the matching item is the add's parent. A match with a removed item moves the add to not tracked. Adds only. Compared against approved items and earlier adds in the same answer. A bare number with no match is stored as given |

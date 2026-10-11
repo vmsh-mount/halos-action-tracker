@@ -50,7 +50,21 @@ def edit_item(
         if due != item.due:
             changes["due"] = due
             changes["due_phrase"] = None  # a date the lead typed has no phrase behind it
-    set_fields(item, changes, on=draft.standup.date, by="lead", action="edit", merge=True)
+    changed = set_fields(item, changes, on=draft.standup.date, by="lead", action="edit", merge=True)
+    if changed:
+        _resolve(item, draft)
+
+
+def _resolve(item: Item, draft: DayRecord) -> None:
+    """The lead has dealt with this item, so it no longer needs their attention."""
+    if item.review_reasons:
+        set_fields(item, {"review_reasons": []}, on=draft.standup.date, by="lead", action="reviewed")
+
+
+def mark_reviewed(state: State, item_id: str) -> None:
+    """The lead looked at a flagged item and is keeping it as proposed."""
+    draft = _draft(state)
+    _resolve(_item(draft, item_id), draft)
 
 
 def remove_item(state: State, item_id: str) -> None:

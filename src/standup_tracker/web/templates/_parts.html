@@ -1,0 +1,215 @@
+{% macro icon(name) %}<svg class="icon" aria-hidden="true"><use href="#{{ name }}"/></svg>{% endmacro %}
+
+{% macro status(item) %}
+<span class="status status-{{ item.status }}">{{ icon("s-" ~ item.status) }}{{ status_label(item.status) }}</span>
+{% endmacro %}
+
+{% macro chips(row) %}
+  {%- for label in row.labels %}<span class="chip {{ 'new' if label == 'added' }} {{ 'done' if label == 'closed' }}">{{ label | label }}</span> {% endfor -%}
+  {%- if row.overdue %}<span class="chip overdue">Overdue</span>{% endif -%}
+{% endmacro %}
+
+{% macro facts(item, overdue=false) %}
+<div class="facts">
+  <span class="who {{ 'none' if not item.owner }}">{{ item.owner or "Unassigned" }}</span>
+  <span class="sep" aria-hidden="true">·</span>{{ status(item) }}
+  <span class="sep" aria-hidden="true">·</span>
+  <span>{% if item.due %}Due <span class="due {{ 'late' if overdue }}">{{ item.due | day }}</span>{% else %}No due date{% endif %}
+    {%- if item.due_phrase %} <span class="faint">(said as “{{ item.due_phrase }}”)</span>{% endif %}</span>
+  {%- if item.ticket %}<span class="sep" aria-hidden="true">·</span><span>{{ item.ticket }}</span>{% endif %}
+  {%- if item.parent %}<span class="sep" aria-hidden="true">·</span><span>Part of <a href="/items/{{ item.parent }}">{{ item.parent }}</a></span>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro diff(steps) %}
+<dl class="diff">
+  {% for step in steps %}
+    <dt>{{ step.name }}</dt>
+    <dd>{% if step.name == "Note" %}<ins class="note">{{ step.after }}</ins>
+        {%- else %}<del>{{ step.before }}</del><span class="arrow" aria-hidden="true">→</span><span class="sr-only">changed to</span><ins>{{ step.after }}</ins>{% endif %}</dd>
+  {% endfor %}
+</dl>
+{% endmacro %}
+
+{% macro evidence(quotes, said_on=none, compact=false) %}
+{% if quotes %}
+<ul class="evidence {{ 'compact' if compact }}" aria-label="Supporting words from the transcript">
+  {% for quote in quotes %}
+    <li><span class="speaker">{{ quote.speaker or "Unknown speaker" }}</span>{% if said_on %}<span class="faint">, {{ said_on | day }}</span>{% endif %}: “{{ quote.text }}”</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+{% macro edit(item, statuses) %}
+<details class="edit">
+  <summary aria-label="Edit {{ item.id }}">{{ icon("i-edit") }}Edit</summary>
+  <div class="edit-panel">
+    <form method="post" action="/items/{{ item.id }}/edit">
+      <div class="edit-fields">
+        <label class="field">Owner <input name="owner" value="{{ item.owner or '' }}" list="people" placeholder="Unassigned" autocomplete="off"></label>
+        <label class="field">Due date <input type="date" name="due" value="{{ item.due.isoformat() if item.due else '' }}"></label>
+        <label class="field">Status
+          <select name="status">
+            {% for option in statuses %}<option value="{{ option.key }}" {{ "selected" if option.key == item.status }}>{{ option.label }}</option>{% endfor %}
+          </select>
+        </label>
+        <button class="primary" type="submit">Save</button>
+      </div>
+    </form>
+    <div class="edit-foot">
+      <span class="tiny muted">Not real work to track?</span>
+      <form method="post" action="/items/{{ item.id }}/remove"
+            data-confirm="Remove {{ item.id }} “{{ item.title }}” from tracked work? It won’t be added again from future updates.">
+        <button class="danger" type="submit">Not an action item</button>
+      </form>
+    </div>
+  </div>
+</details>
+{% endmacro %}
+
+{% macro change(row, statuses) %}
+<article class="change" id="{{ row.item.id }}">
+  <div>
+    <div class="change-head">
+      <span class="id">{{ row.item.id }}</span>
+      <a class="title" href="/items/{{ row.item.id }}">{{ row.item.title }}</a>
+      {{ chips(row) }}
+    </div>
+    {{ facts(row.item, row.overdue) }}
+    {% for reason in row.item.review_reasons %}
+      <div class="callout">{{ icon("i-alert") }}<span>{{ reason | reason }}</span></div>
+    {% endfor %}
+    {% if row.item.review_reasons and not row.item.removed_on %}
+      <form class="resolve" method="post" action="/items/{{ row.item.id }}/reviewed">
+        <span class="tiny muted">Edit the item to settle this, or</span>
+        <button class="quiet" type="submit">{{ icon("i-check") }}Keep as proposed</button>
+      </form>
+    {% endif %}
+    {% if row.steps %}{{ diff(row.steps) }}{% endif %}
+    {% if row.item.note and "Note" not in row.steps | map(attribute="name") %}<p class="small muted" style="margin-top:6px">{{ row.item.note }}</p>{% endif %}
+    {{ evidence(row.quotes) }}
+    {% if row.lead_steps %}
+      <div class="byyou">Edited by you</div>
+      {{ diff(row.lead_steps) }}
+    {% endif %}
+  </div>
+  {% if not row.item.removed_on %}<div class="change-side">{{ edit(row.item, statuses) }}</div>{% endif %}
+</article>
+{% endmacro %}
+
+{% macro overview(counts) %}
+<div class="overview" aria-label="Summary of tracked work">
+  <div class="{{ 'zero' if not counts.active }}"><div class="n">{{ counts.active }}</div><div class="k">Active</div></div>
+  <div class="{{ 'hold' if counts.blocked else 'zero' }}"><div class="n">{{ counts.blocked }}</div><div class="k">{{ icon("s-blocked") }}Blocked</div></div>
+  <div class="{{ 'alert' if counts.overdue else 'zero' }}"><div class="n">{{ counts.overdue }}</div><div class="k">Overdue</div></div>
+  <div class="{{ 'zero' if not counts.unassigned }}"><div class="n">{{ counts.unassigned }}</div><div class="k">Unassigned</div></div>
+</div>
+{% endmacro %}
+
+{% macro work_table(rows, statuses, counts, editable=false) %}
+<div data-work>
+  {% if rows %}
+  <div class="section-head">
+    <div class="toolbar" role="group" aria-label="Filter tracked work">
+      <div class="filters">
+        <button type="button" data-filter="all" aria-pressed="true">All <span class="num">{{ rows | length }}</span></button>
+        <button type="button" data-filter="active" aria-pressed="false">Active <span class="num">{{ counts.active }}</span></button>
+        <button type="button" data-filter="blocked" aria-pressed="false">Blocked <span class="num">{{ counts.blocked }}</span></button>
+        <button type="button" data-filter="overdue" aria-pressed="false">Overdue <span class="num">{{ counts.overdue }}</span></button>
+        <button type="button" data-filter="unassigned" aria-pressed="false">Unassigned <span class="num">{{ counts.unassigned }}</span></button>
+        <button type="button" data-filter="closed" aria-pressed="false">Closed <span class="num">{{ counts.closed }}</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="sr-only" for="owner-filter">Filter by owner</label>
+      <select id="owner-filter" data-owner-filter>
+        <option value="">All owners</option>
+        {% for name in rows | map(attribute="item.owner") | select | unique | sort %}<option value="{{ name }}">{{ name }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  {% endif %}
+  <div class="table-wrap {{ 'has-edit' if editable }}">
+    {% if rows %}
+    <table class="work">
+      <thead>
+        <tr>
+          <th scope="col" class="col-item" data-sort="id"><button type="button">Item</button></th>
+          <th scope="col" class="col-owner" data-sort="owner"><button type="button">Owner</button></th>
+          <th scope="col" class="col-due" data-sort="due"><button type="button">Due</button></th>
+          <th scope="col" class="col-status" data-sort="status"><button type="button">Status</button></th>
+          {% if editable %}<th scope="col" class="col-edit"><span class="sr-only">Edit</span></th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in rows %}
+        <tr class="{{ 'is-closed' if status_group(row.item) == 'closed' }} {{ 'is-untouched' if editable and not row.changed }}"
+            data-n="{{ row.item.id[1:] }}" data-status="{{ row.item.status }}" data-group="{{ status_group(row.item) }}"
+            data-owner="{{ row.item.owner or '' }}" data-due="{{ row.item.due.isoformat() if row.item.due else '' }}" data-overdue="{{ 1 if row.overdue else 0 }}">
+          <td class="col-item">
+            <div class="item-title"><span class="id">{{ row.item.id }}</span><a href="/items/{{ row.item.id }}">{{ row.item.title }}</a>
+              {%- if editable and row.changed %} <span class="chip new">{{ "New" if "added" in row.labels else "Changed" }}</span>{% endif %}
+              {%- if row.item.review_reasons %} <span class="chip attention">Needs attention</span>{% endif %}</div>
+            <div class="item-sub">
+              {% if row.item.parent %}<div>Part of <a href="/items/{{ row.item.parent }}">{{ row.item.parent }}</a></div>{% endif %}
+              {% if row.item.note %}<div>{{ row.item.note }}</div>{% endif %}
+              {% if not (editable and row.changed) %}{{ evidence(row.support, row.support_date, true) }}{% endif %}
+            </div>
+          </td>
+          <td class="col-owner"><span class="owner {{ 'none' if not row.item.owner }}">{{ row.item.owner or "Unassigned" }}</span></td>
+          <td class="col-due">{% if row.item.due %}<span class="due {{ 'late' if row.overdue }}">{{ row.item.due | day }}</span>{% if row.overdue %} <span class="chip overdue">Overdue</span>{% endif %}{% else %}<span class="faint">—</span>{% endif %}</td>
+          <td class="col-status">{{ status(row.item) }}</td>
+          {% if editable %}<td class="col-edit">{{ edit(row.item, statuses) }}</td>{% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <div class="no-match" hidden>No items match this filter.</div>
+    {% else %}
+    <div class="empty">
+      <h3>No tracked work yet</h3>
+      <p>Process your first team update above. The action items, owners and due dates it contains will appear here once you’ve reviewed and approved them.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro composer(form, ask_rerun, mode, title, hint, action) %}
+<form class="composer" method="post" action="/standup" enctype="multipart/form-data" novalidate>
+  <div class="composer-head">
+    <h2>{{ title }}</h2>
+    <span class="small muted">{{ hint }}</span>
+  </div>
+  <div class="bar" hidden></div>
+  <div class="composer-body">
+    <div class="composer-row">
+      <label class="field">Update date <input type="date" name="date" value="{{ form.date }}" required></label>
+      <div class="file-pick">
+        <input type="file" name="file" accept=".txt,text/plain" aria-label="Attach a transcript file">
+        <span class="button" aria-hidden="true">{{ icon("i-file") }}Attach .txt file</span>
+      </div>
+      <span class="file-name" aria-live="polite"></span>
+    </div>
+    <label class="field">Transcript
+      <textarea name="text" spellcheck="false" aria-describedby="transcript-help"
+        placeholder="Maya: Checkout latency is still mine. Fix should land Thursday.&#10;Jon: I'll review Maya's change today.&#10;Maya: The pricing page copy is blocked on legal.">{{ form.text }}</textarea>
+    </label>
+    <div class="field-error" role="alert" hidden>Paste the transcript or attach a .txt file.</div>
+    <span id="transcript-help" class="tiny muted">One speaker per line, written as “Name: what they said”. Paste the text or attach a file.</span>
+  </div>
+  <div class="composer-foot">
+    <div class="progress" role="status" hidden><span class="spinner" aria-hidden="true"></span>
+      <span>Processing update… <span class="seconds">0s</span>{% if mode.live %} <span class="muted">This usually takes 20 to 40 seconds.</span>{% endif %}</span></div>
+    <span class="tiny muted">{% if not mode.live %}{{ mode.label }}: {{ mode.detail }}{% else %}Proposed changes are shown for review before anything is saved.{% endif %}</span>
+    <div class="actions">
+      {% if ask_rerun %}
+        <button class="primary" type="submit" name="confirm_rerun" value="1">Reprocess and replace</button>
+      {% else %}
+        <button class="primary" type="submit">{{ action }}</button>
+      {% endif %}
+    </div>
+  </div>
+</form>
+{% endmacro %}
