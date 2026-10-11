@@ -10,6 +10,8 @@ check, kept apart:
 """
 
 import datetime as dt
+import json
+import os
 
 import pytest
 
@@ -18,11 +20,20 @@ from practice_week import CORE, FIRM, NOT_TRACKED, _overlaps, home, homes, only
 from standup_tracker import items as items_mod
 from standup_tracker import review, service
 from standup_tracker.llm.replay import DIFFERENT_REQUEST, ReplayClient
-from standup_tracker.models import State
+from standup_tracker.models import DayRecord, State
 from standup_tracker.transcript import find_quote, locate
 
 SAVED = ROOT / "tests" / "saved_answers"
 pytestmark = pytest.mark.skipif(len(list(SAVED.glob("*.json"))) < 5, reason="no saved answers recorded yet")
+
+# tests/live_check.py points this at one saved live run, to put the same properties to it. The misses marked
+# below belong to the one recording, so in that mode the marks are off and every property simply passes or fails.
+LIVE_RUN = os.environ.get("PRACTICE_RUN_FILE")
+replay_only = pytest.mark.skipif(bool(LIVE_RUN), reason="about the saved answers, not a live run")
+
+
+def missed_by_the_recording(reason):
+    return pytest.mark.xfail(condition=not LIVE_RUN, strict=True, reason=reason)
 
 
 def d(day):
@@ -32,6 +43,9 @@ def d(day):
 @pytest.fixture(scope="module")
 def run(team):
     """Replays the week, approving each day with no edits. Keeps each draft as it stood before approval."""
+    if LIVE_RUN:
+        saved = json.loads(open(LIVE_RUN, encoding="utf-8").read())
+        return State.model_validate(saved["state"]), [DayRecord.model_validate(d) for d in saved["drafts"]]
     state, drafts, client = State(), [], ReplayClient(SAVED)
     for day in WEEK:
         draft = service.submit_standup(state, dt.date.fromisoformat(day), transcript(day), team, client)
@@ -51,12 +65,14 @@ def changes(run):
 # ---------------------------------------------------------------- hard: pipeline and always-true properties
 
 
+@replay_only
 def test_every_day_replays_into_an_approved_day(run):
     state, _ = run
     assert [day.state for day in state.days] == ["approved"] * 5 and state.draft is None
     assert all(day.model_run.provider == "replay" for day in state.days)
 
 
+@replay_only
 def test_saved_answers_match_the_current_prompt_and_list(run):
     stale = [str(day.standup.date) for day in run[0].days if DIFFERENT_REQUEST in day.model_run.notes]
     assert stale == [], f"saved answers recorded against a different prompt or list: {stale}. Record them again."
@@ -148,7 +164,7 @@ MISSED_BY_THE_RECORDING = {
 @pytest.mark.parametrize("work", FIRM)
 def test_h4_each_firm_piece_of_work_has_an_item_from_the_day_it_comes_up(run, work, request):
     if work in MISSED_BY_THE_RECORDING:
-        request.applymarker(pytest.mark.xfail(strict=True, reason=MISSED_BY_THE_RECORDING[work]))
+        request.applymarker(missed_by_the_recording(MISSED_BY_THE_RECORDING[work]))
     first = FIRST_DAY[work.split()[0]]
     assert all(len(after(run, index)[work]) == 1 for index in range(first, 5))
 
@@ -186,8 +202,8 @@ def test_h6_the_hedged_search_fix_has_no_date_on_monday_or_tuesday_and_is_marked
         assert search.due is None and any(reason.startswith("hedged") for reason in search.review_reasons)
 
 
-@pytest.mark.xfail(strict=True, reason="on Wednesday the recorded run put the reviewer's 'today' on the search fix; "
-                                       "that day belongs to the review of the PR, not to the fix")
+@missed_by_the_recording("on Wednesday the recorded run put the reviewer's 'today' on the search fix; "
+                         "that day belongs to the review of the PR, not to the fix")
 def test_h6_the_search_fix_never_gets_a_date(run):
     assert [only(after(run, i)["W1 search fix"]).due for i in range(5)] == [None] * 5
 
@@ -201,8 +217,8 @@ def test_h6_small_promises_get_their_day(run):
     assert only(after(run, 2)["W10 doc to send"]).due == d(15)
 
 
-@pytest.mark.xfail(strict=True, reason="on Tuesday the recorded run took infra's estimate ('the cert will be done "
-                                       "tomorrow morning') as the deploy's due date; code cannot catch this")
+@missed_by_the_recording("on Tuesday the recorded run took infra's estimate ('the cert will be done "
+                         "tomorrow morning') as the deploy's due date; code cannot catch this")
 def test_h6_another_teams_estimate_is_not_our_due_date(run):
     deploy = only(after(run, 1)["W3 staging deploy"])
     assert deploy.status == "blocked" and deploy.due is None
@@ -247,6 +263,7 @@ def replay_week_with(team, on_monday):
     return state
 
 
+@replay_only
 def test_h7_a_corrected_owner_survives_the_days_that_come_back_to_the_item(team):
     def correct(state):
         review.edit_item(state, only(homes(state.draft.items_after)["W2 auth bug"]).id, team, owner="Sana")
@@ -258,6 +275,7 @@ def test_h7_a_corrected_owner_survives_the_days_that_come_back_to_the_item(team)
     assert DIFFERENT_REQUEST in state.days[1].model_run.notes  # the saved answer was recorded against another list
 
 
+@replay_only
 def test_h7_a_removed_item_stays_out_when_later_standups_return_to_it(team):
     removed_id = []
 

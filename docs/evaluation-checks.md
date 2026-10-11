@@ -156,8 +156,8 @@ held-out session twelve more.
 | Command | Needs a key | Runs |
 |---|---|---|
 | `pytest` | No | Code tests and practice on saved answers |
-| `python -m standup_tracker.live_check --runs 3` | Yes | Practice, live |
-| `python -m standup_tracker.live_check --set heldout --runs 3` | Yes | Held-out, after the freeze |
+| `python tests/live_check.py --runs 3` | Yes | Practice, live. It sits under `tests/` because it needs the practice week's anchors, which are test data |
+| (not built) | Yes | Held-out, after the freeze |
 
 ## 8. Settled in review
 
