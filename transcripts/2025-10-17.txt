@@ -1,0 +1,8 @@
+Arjun: Sana's out sick, she messaged this morning, so anything of hers rolls to Monday. Dev?
+Dev: Auth is fixed, for real this time. Monitored overnight, clean, no reports. I'm done with 231 unless it comes back a third time.
+Arjun: Good. We should do a retro on that one next week, it bounced twice, I want to know why we missed the cookie thing the first time.
+Priya: Falcon schema draft is up, I put it in the channel. Dev's reviewing.
+Dev: Yeah, today, after lunch.
+Rohan: Onboarding doc, I've got a draft, I'll send it to Priya to check, since she flagged it.
+Priya: Sure.
+Arjun: Okay. That's it. Have a good weekend. Don't deploy on Friday.

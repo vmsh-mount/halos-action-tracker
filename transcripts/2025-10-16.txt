@@ -1,0 +1,10 @@
+Arjun: So, before we start, Rohan's starting today. Intern, final year, he's with us till December. He's sitting with Sana this week, so Sana, be nice. Say hi, Rohan.
+Rohan: Hi everyone.
+Dev: Hey. Okay, so, bad news, 231 is back. Different cause this time, it's the session cookie, not the refresh. Someone reported it last night. I'm on it, should be quick now that I know where to look. Oh, and the search PR, I reviewed it, left two comments, nothing big, Arjun you can just merge.
+Arjun: Already did. Search is merged, I'm watching the numbers, so far so good. Falcon. For Rohan's benefit: Falcon is the payments DB migration, we're moving off the old schema. Priya and Dev are on it for the next two weeks. Dev, you're splitting with 231 until that's closed, then full time.
+Dev: Yeah.
+Priya: Yeah. Which means, um, export is going to slip. Falcon ate my week, basically, the kickoff alone was three hours. Say Wednesday?
+Arjun: Wednesday's fine.
+Sana: I'm picking up the Hermes retry bug, APP-402, the one where it retries forever on a 400. Should be done tomorrow, it's small.
+Rohan: Um, I can take the onboarding doc, if that's still a thing? I was going to read it anyway, so I'll notice what's wrong.
+Arjun: It's still a thing. Yes, take it. Good. Okay, that's it.

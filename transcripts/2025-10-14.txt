@@ -1,0 +1,6 @@
+Arjun: Quick one today. Search, still on it. Turns out it's the index, not the query, so the fix is a bit bigger than I thought. Tomorrow, probably.
+Dev: PAY-231, the auth one. Confirmed it's token refresh, fix is going out today, I just need Priya to glance at the PR. Also, someone pinged me about the Atlas login being slow. Might be related to 231, might not. I'll look after.
+Arjun: Okay.
+Sana: Infra got back. They say the cert will be done tomorrow morning. Nothing else from me.
+Priya: Export's going fine. Still Monday. I'll look at Dev's PR after this.
+Arjun: Good. That's it.

@@ -1,0 +1,13 @@
+Arjun: Okay, let's go, I've got a call at ten fifteen. I'll start. Search latency, still on it. I thought it was the query but I'm not sure anymore, I'll know by tonight. Should have a fix today, maybe tomorrow worst case. Priya?
+Priya: Um, so the auth bug from yesterday, the one from the support ticket? I can pick that up. I mean, actually, Dev, you were in that code last week for the refresh thing, right? Do you want it?
+Dev: Yeah, I had context. I'll take it. Pretty sure it's the token refresh, same area.
+Arjun: Cool, Dev on auth then. Sana?
+Sana: So, the Hermes staging deploy is blocked. The cert expired over the weekend, I only found out when the deploy failed this morning. It's with infra, I've pinged them in the channel, no reply yet.
+Arjun: Right, that's not ours then. Just keep on them. Anything else?
+Sana: No, that's it for me. Oh, actually, one thing. Should we do something about the flaky test in CI? It failed twice yesterday, and both times it was the same timeout.
+Arjun: Hmm. Let's talk about it after, not now. Priya, since you're off auth?
+Priya: Yeah, so I'm free now. I'll start on the export feature. We said Friday for that, but honestly with the auth thing moving around and me losing this morning to it, Monday is more realistic.
+Arjun: Fine, Monday. Dev, anything else?
+Dev: Oh, the customer who emailed about the CSV thing, the encoding issue, I replied last night, that's done. Nothing else.
+Priya: One more from me, sorry. The onboarding doc is out of date. I noticed when support asked for it, half the links are dead.
+Arjun: Noted. Someone should fix that at some point. Okay, that's it, go.

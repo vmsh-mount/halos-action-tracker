@@ -1,0 +1,9 @@
+Arjun: Morning. Search fix is in review, finally. Dev, can you look at it today? It's not big, two files.
+Dev: Yeah, I'll review Arjun's search PR today. Auth is done, by the way, deployed last night, Priya looked at it. The Atlas login thing was unrelated, it was just a slow query on the roles table, I fixed it while I was in there.
+Arjun: Nice.
+Sana: Cert's in. Hermes staging deploy went out this morning, all green. All good.
+Arjun: Great. Also, heads up, Falcon kickoff is Thursday, two pm. Priya and Dev, block the afternoon.
+Priya: Okay. Is there a doc or anything?
+Arjun: I'll send something tonight.
+Priya: Cool. The Atlas export is still on for Monday.
+Arjun: Good. That's it.
