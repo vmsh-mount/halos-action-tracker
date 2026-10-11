@@ -232,6 +232,10 @@ def apply_changes(
                     new_values["due"] = result.date
                     if result.date != item.due:
                         new_values["due_phrase"] = phrase
+                elif item.due is not None and result.vague:
+                    # "soon" does not say the date moved, but "in two days" lands here too: keep the date and
+                    # let the lead see that timing came up.
+                    flags.append(Flag(rule="D4", reason=f"timing mentioned, date unchanged: '{phrase}'"))
                 else:
                     if item.due is not None:
                         flags.append(Flag(rule="D4", reason=f"date no longer pinned: '{phrase}'"))

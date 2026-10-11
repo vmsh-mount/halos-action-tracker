@@ -100,7 +100,8 @@ row below applies.
 | Present, **D1**: not inside any quote of this change | Nothing stored. Review reason "date phrase not in the quoted words" | Same; **existing date kept** |
 | Present, **D2**: hedge or condition word in the sentence, or two different days in the phrase | `due_phrase` := phrase. Review reason | `due` cleared, `due_phrase` := phrase. Review reason |
 | Present, **D3**: one computable day, no day-shifting word | `due` := date, `due_phrase` := phrase | `due` := date, `due_phrase` := phrase. If the date equals the one already held, neither `due` nor `due_phrase` changes [X 4] |
-| Present, **D4**: day-shifting word, or no computable day | `due_phrase` := phrase. No review reason | `due` cleared, `due_phrase` := phrase. Review reason "date no longer pinned" |
+| Present, **D4** with a day or a day-shifting word in the phrase ("next Friday", "next week", "after this") | `due_phrase` := phrase. No review reason | `due` cleared, `due_phrase` := phrase. Review reason "date no longer pinned" |
+| Present, **D4** with neither ("soon", "at some point", but also "in two days", "end of month") | `due_phrase` := phrase. No review reason | `due` and `due_phrase` kept. Review reason "timing mentioned, date unchanged", because code cannot tell vague talk from a real re-date it does not understand |
 
 Labels: none → date = dated; date → different date = re-dated (earlier or later alike); date → none = date
 cleared [O 1] [X 3].
@@ -162,7 +163,7 @@ Flags that create review reasons, and their source:
 | C5 | parent link dropped: *why* | Code |
 | D1 | date phrase not in the quoted words | Code |
 | D2 | hedged: '*word*' / conditional: '*word*' / two days named | Code |
-| D4 with prior date | date no longer pinned: '*phrase*' | Code |
+| D4 with prior date | date no longer pinned: '*phrase*', or timing mentioned, date unchanged: '*phrase*' | Code |
 | Model | free text from `review_reason` | Model |
 
 Rules U3 (undecided), U20 (conditional, apart from the date) and "two owners named" [X 11] have no code check.
@@ -181,7 +182,7 @@ Three tiers. A failure in one tier never reaches the next.
 | A draft exists for a different date | Rejected: approve or discard it first |
 | A draft exists for the same date | Needs confirmation; then proceeds as a re-run |
 | Text empty, or no line starts a speaker turn | Rejected; nothing sent |
-| Provider is OpenRouter and key or model name is empty | Rejected with a message naming the setting |
+| Provider is the chat API and `LLM_API_KEY`, `LLM_BASE_URL` or `LLM_MODEL` is empty | Rejected with a message naming the setting |
 | Provider is Replay and no saved answer has this lookup key | Rejected: "No saved answer for this transcript…" |
 
 The date is not compared with the clock. A 2025 transcript is accepted in 2026.
@@ -193,11 +194,11 @@ A slip inside one change is handled in §3.3 and costs only that change or that 
 
 | Condition | Result |
 |---|---|
-| Timeout (60 s) or HTTP 5xx | One retry, same request |
-| HTTP 429 | One retry after a pause: the `Retry-After` value if the provider gives one, otherwise 5 seconds |
+| Timeout (180 s) or HTTP 5xx | One retry, same request |
+| HTTP 429 | One retry after a pause: the `Retry-After` value if the provider gives one, capped at 30 seconds; otherwise 5 seconds |
 | HTTP 200 with an empty body, or a body that carries an error instead of an answer | Treated as a provider error: one retry, same request |
 | Other HTTP error (401, 402, other 4xx) | Fails at once, no retry |
-| After stripping a surrounding code fence: not JSON, not an object, or no `changes` list | One retry, with the validation error appended to the request |
+| After stripping a surrounding code fence, and trying the text between the outer braces if the whole is not JSON: still not JSON, not an object, or no `changes` list | One retry, with the validation error appended to the request |
 | Second attempt fails for any reason | Run fails. No draft. `last_failed_run` holds the error and the raw text of both attempts [O 8] |
 
 Tolerated without failing: keys the shape does not name (ignored), a missing `not_tracked` (treated as
@@ -426,7 +427,7 @@ The model cannot remove an item, and cannot target a `ref` with an update.
 | Date | The standup date and its weekday |
 | Team facts | People with other names and roles, glossary, ticket prefixes |
 | Instructions | The template with team facts filled in. Identical for every day |
-| Temperature | 0 |
+| Temperature | Not sent, unless `LLM_TEMPERATURE` is set |
 | Lookup key | Standup date + short hash of the turns (speaker and words, whitespace collapsed) |
 | Fingerprint | Hash of the instructions, the input text and the answer shape, as first sent. Not the model name, so switching models does not raise the "different list" note [O 8] |
 

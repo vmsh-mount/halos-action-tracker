@@ -13,6 +13,13 @@ ROOT = Path(__file__).resolve().parent.parent
 WEEK = ["2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17"]
 
 
+@pytest.fixture(autouse=True)
+def never_a_live_model(monkeypatch):
+    """A key in the shell or in .env must not make a test run call a live model."""
+    monkeypatch.setenv("LLM_PROVIDER", "replay")
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+
+
 @pytest.fixture(scope="session")
 def team():
     return load_team(ROOT / "config" / "team.json")

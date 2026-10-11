@@ -9,8 +9,8 @@ Status: in progress. See [PLAN.md](PLAN.md) for scope, requirements and mileston
 
 _To be written (M2–M4)._
 
-Model access goes through OpenRouter. Copy `.env.example` to `.env` and set `OPENROUTER_API_KEY` and
-`LLM_MODEL`. Tests and the replay demo need no key.
+Model access goes through any chat-completions API; OpenRouter is the one used here. Copy `.env.example` to
+`.env` and set `LLM_API_KEY` (and `LLM_BASE_URL`, `LLM_MODEL` if you want others than the defaults there). Tests and the replay demo need no key.
 
 ## How to run the tests
 
@@ -20,6 +20,10 @@ python3 -m venv .venv
 
 ```bash
 .venv/bin/pip install -r requirements.txt
+```
+
+```bash
+.venv/bin/pip install -e .
 ```
 
 ```bash

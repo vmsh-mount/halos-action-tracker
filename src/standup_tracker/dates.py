@@ -16,6 +16,7 @@ class DateResult:
     step: str  # "D1", "D2", "D3" or "D4"
     date: dt.date | None = None
     reason: str | None = None  # set for D1 and D2; D4 gets one from the caller if a date was cleared
+    vague: bool = False  # D4 only: no day and no day-shifting word ("soon"). Says nothing about a date held
 
 
 def _has_word(text: str, word: str) -> bool:
@@ -97,4 +98,4 @@ def resolve_due(phrase: str, quotes: list[tuple[str, Turn]], standup: dt.date) -
         return DateResult("D2", reason="two days named")
     if len(distinct) == 1 and not shifting:
         return DateResult("D3", date=distinct[0])
-    return DateResult("D4")
+    return DateResult("D4", vague=not days and not shifting)

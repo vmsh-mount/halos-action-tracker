@@ -50,7 +50,7 @@ Time budget: 3–5 hours, hard stop at 5.
 |---|---|
 | R15 | All model calls go through one generic LLM interface. No code outside that interface knows which provider or model is in use |
 | R16 | Provider, model name and API key come from configuration (environment variables), not from code |
-| R17 | The live provider is OpenRouter, key read from `OPENROUTER_API_KEY`. With a key set it is used; with none, the app runs on saved answers |
+| R17 | The live model is reached through a chat-completions API named by three settings: `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`. Nothing in the names or the code is specific to one provider; OpenRouter is the endpoint we use. With a key set it is used; with none, the app runs on saved answers |
 | R18 | The interface has a replay implementation that returns saved responses, so tests and the demo run with no key and no spend |
 | R19 | The lead can also set an item's status directly, including finishing or cancelling it |
 | R20 | Everything the lead does on a day that is approved (edits, removals, the approval) is recorded; a removed item is hidden, not deleted. Edits on a discarded or re-run draft are not kept |
@@ -64,7 +64,7 @@ Each milestone ends with something you can look at, then stops for your go-ahead
 | M0 | Setup | Repo skeleton, the five transcripts as dated text files, README stub, `.env.example`, `.gitignore`, confirm the agent transcript can be exported | 15 min |
 | M1 | Design docs | The documents in section 6, reviewed and approved | 30 min |
 | M2 | List engine (no AI) | Running list, applying changes, day-to-day carry-over, local file storage, unit tests | 40 min |
-| M3 | Reading transcripts | Generic LLM interface with OpenRouter and replay implementations; Mon–Fri run live from the command line; responses saved | 55 min |
+| M3 | Reading transcripts | Generic LLM interface with chat-API and replay implementations; Mon–Fri run live from the command line; responses saved | 55 min |
 | M4 | Review page | Submit transcript + date, see today's changes with supporting words, edit owner/date, remove, approve | 55 min |
 | M5 | Tests | The agreed checks, one command, on saved responses; separate script for a live run | 40 min |
 | M6 | Write-up and held-out run | README complete; prompt and code frozen at a named commit, then the held-out set run three times against the live model and reported as it came out | 40 min |
@@ -95,7 +95,7 @@ Proposed, to confirm before M0.
 | Language | Python 3.11+ |
 | App | One local web server, started with a single command; a command-line entry for processing a transcript without the page |
 | State | Local JSON file under `data/`, git-ignored |
-| Model access | OpenRouter through the generic interface (R15–R17); model name set by `LLM_MODEL` |
+| Model access | A chat-completions endpoint (OpenRouter) through the generic interface (R15–R17), set by `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` |
 | Secrets | `.env` file, git-ignored; `.env.example` committed with empty values |
 | Tests | One command, no key needed (uses saved responses) |
 | Live check | Separate script, needs a key, prints what it spent where the provider reports it |

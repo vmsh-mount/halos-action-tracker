@@ -233,7 +233,10 @@ writing H1's properties. New items are still found by the words they rest on.
 6. **If we change anything because of what we saw, the set is spent.** The README says so, shows the before
    and after, and the set counts as practice from then on.
 
-**What it cannot tell us.** Four short transcripts is evidence, not proof. Drafted from our own list of
+**What it cannot tell us.** The prompt's five worked examples show cancelled work, a reassignment, a
+conditional promise, a removed item coming up again and "didn't get to it". Those are the same behaviours
+the held-out transcripts are required to include. So the held-out run measures unseen wording and an unseen
+team, not unseen behaviours. Four short transcripts is evidence, not proof. Drafted from our own list of
 cases, they lean towards things we already thought of. Both limits go in the README.
 
 ## 7. Where the design already leans on the week

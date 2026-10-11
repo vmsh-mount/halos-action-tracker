@@ -224,3 +224,20 @@ def test_a_quote_cannot_start_or_end_inside_a_word(team):
                     {"kind": "add", "fields": {"title": "Sliced"}, "quotes": ["he login bug is fixed and deploye"]},
                     {"kind": "add", "fields": {"title": "Whole"}, "quotes": ["the login bug is fixed and deployed"]})
     assert outcomes(draft) == [("could_not_verify", "C1"), ("applied", None)]
+
+
+def test_vague_timing_does_not_wipe_a_firm_date_but_is_kept_on_an_undated_item(team):
+    state, _ = day1(team)
+    review.approve(state)
+    text = "Ben: Export should be ready soon.\nAna: I'll get to the dashboard cleanup soon."
+    changes = [
+        {"kind": "update", "item_id": "A2", "fields": {"due_phrase": "soon"}, "quotes": ["Export should be ready soon."]},
+        {"kind": "add", "fields": {"title": "Dashboard cleanup", "owner": "Ana", "due_phrase": "soon"},
+         "quotes": ["I'll get to the dashboard cleanup soon."]},
+    ]
+    draft = submit(state, team, DAY2, {"changes": changes}, text=text)
+    items = by_id(draft.items_after)
+    assert (items["A2"].due, items["A2"].due_phrase) == (dt.date(2025, 10, 17), "Friday")
+    assert items["A2"].review_reasons == ["timing mentioned, date unchanged: 'soon'"]
+    assert (draft.checked_changes[0].outcome, draft.checked_changes[0].change_labels) == ("applied", [])
+    assert (items["A3"].due, items["A3"].due_phrase, items["A3"].review_reasons) == (None, "soon", [])

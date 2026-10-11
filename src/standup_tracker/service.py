@@ -1,15 +1,15 @@
-"""Runs each use case end to end. Holds no rules of its own; it sequences the other parts.
-
-The model call is added around build_draft in the next milestone.
-"""
+"""Runs each use case end to end. Holds no rules of its own; it sequences the other parts."""
 
 from __future__ import annotations
 
 import datetime as dt
 
+from . import prompt
 from .apply import apply_changes
+from .extract import ModelRunFailed, propose
+from .llm import LLMClient, LLMError
 from .models import DayRecord, Item, ModelRun, ProposedChange, Standup, State, Team
-from .transcript import split_turns
+from .transcript import NoSpeakerTurns, split_turns
 
 
 class SubmitError(ValueError):
@@ -72,3 +72,50 @@ def build_draft(
     )
     state.last_failed_run = None
     return state.draft
+
+
+class SubmitFailed(SubmitError):
+    """The standup was accepted but the model run produced nothing. The list and any draft are untouched."""
+
+
+def submit_standup(
+    state: State,
+    date: dt.date,
+    text: str,
+    team: Team,
+    client: LLMClient,
+    *,
+    confirm_rerun: bool = False,
+    temperature: float | None = None,
+    now: dt.datetime | None = None,
+) -> DayRecord:
+    """Transcript in, draft out. On any failure no draft is made and an existing draft is left as it was."""
+    check_can_submit(state, date, confirm_rerun=confirm_rerun)
+    if not text.strip():
+        raise SubmitError("The transcript is empty.")
+    try:
+        standup = make_standup(date, text)
+    except NoSpeakerTurns as error:
+        raise SubmitError(f"{error} Each turn should start like 'Name: words'.") from error
+
+    request = prompt.build_request(standup, current_items(state), team, temperature=temperature)
+    try:
+        proposal = propose(client, request)
+    except LLMError as error:
+        state.last_failed_run = {
+            "date": date.isoformat(),
+            "at": (now or dt.datetime.now()).isoformat(timespec="seconds"),
+            "error": str(error),
+            "attempts": error.attempts if isinstance(error, ModelRunFailed) else [],
+        }
+        raise SubmitFailed(str(error)) from error
+
+    run = ModelRun(
+        provider=proposal.response.provider,
+        model=proposal.response.model,
+        at=now or dt.datetime.now(),
+        fingerprint=proposal.fingerprint,
+        notes=proposal.response.notes,
+        attempts=proposal.attempts,
+    )
+    return build_draft(state, standup, proposal.changes, proposal.not_tracked, team, model_run=run)

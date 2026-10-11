@@ -21,7 +21,7 @@ What the program is made of, what each part is allowed to know, and the path fro
         │           turns · dates · checks
         ▼           apply · lead actions
    LLM interface
-   ├─ OpenRouter
+   ├─ Chat API (any chat-completions endpoint; OpenRouter here)
    ├─ Replay (saved answers)
    └─ Recorder (wraps another, saves what it returns)
 ```
@@ -66,34 +66,34 @@ One operation: **text in, text out**.
 
 | | Fields |
 |---|---|
-| Request | Instructions, input text, the answer shape wanted (a JSON schema), temperature, and a **lookup key**: an opaque string the caller chooses |
+| Request | Instructions, input text, the answer shape wanted (a JSON schema), an optional temperature, and a **lookup key**: an opaque string the caller chooses |
 | Response | The answer text, provider name, model name, token counts if the provider reports them, and **notes**: plain-text remarks for the caller to show ("saved answer, recorded against a different list") |
 
 The lookup key means nothing to the interface. `service` builds it from the standup date and a short hash
 of the **parsed turns** (each turn's speaker and words, with runs of whitespace collapsed), not of the text
 as typed. Pasting a transcript into the page changes its line endings, and copying from the PDF changes its
-line wrapping; the turns come out the same, so the key does too. OpenRouter ignores it; Replay and the Recorder use it as the name of the saved
+line wrapping; the turns come out the same, so the key does too. The chat API client ignores it; Replay and the Recorder use it as the name of the saved
 answer. So `llm/` still knows nothing about standups.
 
 Three implementations:
 
 | Implementation | Behaviour |
 |---|---|
-| OpenRouter | Sends the request to OpenRouter's chat endpoint with the model named in `LLM_MODEL` and the key in `OPENROUTER_API_KEY` |
+| Chat API | Sends the request to the chat-completions endpoint at `LLM_BASE_URL`, with the model named in `LLM_MODEL` and the key in `LLM_API_KEY`. Nothing in it is specific to one provider; with the base URL in `.env.example` it reaches OpenRouter |
 | Replay | Returns the saved answer stored under the lookup key. No key, no network |
 | Recorder | Wraps another implementation and saves each answer under `tests/saved_answers/`, named by lookup key. Switched on with `--record` |
 
 **Which one is used** (decided in one small factory function, from the environment):
 
 1. `LLM_PROVIDER`, if set, decides.
-2. Otherwise, if `OPENROUTER_API_KEY` is set, OpenRouter. A reviewer who sets a key gets the live model
+2. Otherwise, if `LLM_API_KEY` is set, the chat API. A reviewer who sets a key gets the live model
    without a second setting. "Set" means not empty: `.env.example` ships the name with no value, and a
    reviewer who copies it unchanged must get the demo, not a call with a blank key.
 3. Otherwise Replay.
 
 **Tests never go through that choice.** They build Replay directly, and the test setup also forces
 `LLM_PROVIDER=replay`. A key sitting in `.env` must not make a test run call the live model, cost money and
-give varying results. Only the separate live-check script uses OpenRouter.
+give varying results. Only the separate live-check script uses the chat API.
 
 **Replay answers only the question it was recorded for.**
 
@@ -101,14 +101,15 @@ give varying results. Only the separate live-check script uses OpenRouter.
 |---|---|
 | Same transcript and date, same list | The saved answer |
 | Same transcript and date, the list differs (the lead edited an earlier day) | The saved answer, with a note shown on the page |
-| A transcript it has no saved answer for (the reviewer pastes their own) | Stops: "No saved answer for this transcript. Set `OPENROUTER_API_KEY` to use a live model." |
+| A transcript it has no saved answer for (the reviewer pastes their own) | Stops: "No saved answer for this transcript. Set `LLM_API_KEY` to use a live model." |
 
 Rules:
 
 - Nothing outside `llm/` imports a network library, names a provider, or reads a key.
 - Adding a provider is one new file implementing the one operation.
 - **The answer is always checked by our own code**, whatever the provider promises. We ask for JSON in a
-  given shape; `extract` strips any code fence around it (many models add one) and validates it. Only an
+  given shape; `extract` strips any code fence around it (many models add one), falls back to the text between the first
+  `{` and the last `}` if a sentence was added around the object, and validates it. Only an
   answer that cannot be read at all (not JSON, or no `changes` list) is refused as a whole. A slip inside
   one change, such as an unknown status or a missing field, costs that change or that field, never the run.
   Unknown keys are ignored. That keeps us independent of any one provider's structured-output feature.
@@ -120,9 +121,14 @@ Rules:
   kept. The fingerprint saved with an answer is always that of the **original** request, even when the
   answer came from the retry; otherwise every later replay of that day would show the "different list"
   note for no reason.
-- An explicit timeout of 60 seconds on the network call. The library's default is 5, shorter than many
-  model calls.
-- Temperature 0. It does not make answers identical between runs, but it narrows the spread.
+- An explicit timeout of 180 seconds on the network call. The library's default is 5, and a reasoning model
+  reading a long prompt can take well over a minute; a timeout would use up the one retry.
+- The pause before a rate-limit retry is capped at 30 seconds, whatever the provider asks.
+- Temperature is optional and sent only when `LLM_TEMPERATURE` is set. The first design said "always 0", but
+  the provider's model list shows that many current models, including the one chosen, do not accept a
+  temperature. So run-to-run variation is expected, and results are reported as N of 3.
+- The chat API client asks for a JSON object (`response_format`) and describes the shape in the
+  instructions. It does not use a provider's strict-schema feature.
 
 ## 4. What happens, step by step
 
@@ -223,10 +229,13 @@ All from the environment (a git-ignored `.env`), never from code.
 
 | Name | Meaning | Default |
 |---|---|---|
-| `LLM_PROVIDER` | `openrouter` or `replay` | Not set: OpenRouter if a key is set, otherwise Replay |
-| `LLM_MODEL` | Model name as the provider knows it | None in code. `.env.example` ships with the model chosen in M3 filled in; OpenRouter without it is a clear error |
-| `OPENROUTER_API_KEY` | Key | none; required for `openrouter` |
+| `LLM_PROVIDER` | `api` or `replay` | Not set: the chat API if a key is set, otherwise Replay |
+| `LLM_MODEL` | Model name as the provider knows it | None in code. `.env.example` ships with the model chosen in M3 filled in; the chat API without it is a clear error |
+| `LLM_API_KEY` | Key for that API | None; required for `api`. In `.env` it may reference a variable already in the shell, such as `${OPENROUTER_API_KEY}` |
+| `LLM_BASE_URL` | Where the chat-completions API lives | None in code. `.env.example` ships OpenRouter's; the chat API without it is a clear error |
+| `LLM_TEMPERATURE` | Temperature, for models that accept one | Not sent |
 | `STATE_FILE` | Where the state is saved | `data/state.json` |
+| `SAVED_ANSWERS_DIR` | Where saved answers are read from and recorded to | `tests/saved_answers` |
 | `TEAM_FILE` | Team settings | `config/team.json` |
 
 With no key, the app runs on Replay: a reviewer gets a working demo of the five days, and the page says
@@ -251,7 +260,8 @@ it half-written. There is no locking: two browser tabs approving at once is not 
 
 | Question | Decision |
 |---|---|
-| Default provider | Replay when no key is set; a set key selects OpenRouter by itself; `LLM_PROVIDER` overrides both |
+| Default provider | Replay when no key is set; a set key selects the chat API by itself; `LLM_PROVIDER` overrides both |
+| Setting names | Provider-neutral: `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`. No setting or code names OpenRouter |
 | Retry | One, for a timeout, a 5xx or a wrong shape; a wrong-shape retry sends the validation error back |
 | History sent to the model | No, as a starting point |
 | Second independent review | All taken up: lookup key hashed from parsed turns; "set" means not empty; tests build Replay directly; the saved fingerprint is the original request's |
