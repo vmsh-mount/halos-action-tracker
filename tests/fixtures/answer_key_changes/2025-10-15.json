@@ -1,0 +1,31 @@
+{
+  "changes": [
+    {"kind": "update", "item_id": "A1",
+     "fields": {"note": "Fix in review"},
+     "quotes": ["Search fix is in review, finally."]},
+    {"kind": "add", "ref": "new1",
+     "fields": {"title": "Review the search PR", "owner": "Dev", "parent": "A1", "due_phrase": "today"},
+     "quotes": ["Yeah, I'll review Arjun's search PR today."]},
+    {"kind": "update", "item_id": "A2",
+     "fields": {"status": "done"},
+     "quotes": ["Auth is done, by the way, deployed last night, Priya looked at it."]},
+    {"kind": "update", "item_id": "A8",
+     "fields": {"status": "done"},
+     "quotes": ["deployed last night, Priya looked at it."]},
+    {"kind": "update", "item_id": "A7",
+     "fields": {"status": "done", "note": "Unrelated to PAY-231; slow query on the roles table"},
+     "quotes": ["The Atlas login thing was unrelated", "I fixed it while I was in there."]},
+    {"kind": "update", "item_id": "A3",
+     "fields": {"status": "done"},
+     "quotes": ["Hermes staging deploy went out this morning, all green."]},
+    {"kind": "add", "ref": "new2",
+     "fields": {"title": "Send the Falcon doc", "owner": "Arjun", "due_phrase": "tonight"},
+     "quotes": ["Is there a doc or anything?", "I'll send something tonight."]},
+    {"kind": "update", "item_id": "A5",
+     "fields": {"due_phrase": "Monday"},
+     "quotes": ["The Atlas export is still on for Monday."]}
+  ],
+  "not_tracked": [
+    {"quote": "Falcon kickoff is Thursday, two pm.", "reason": "meeting with a time already set"}
+  ]
+}

@@ -68,7 +68,7 @@ only on the closed/active class of the two ends, except where stated.
 | active | `dropped` | dropped | None |
 | `done` | `dropped` | dropped | None |
 | `dropped` | `done` | closed | None |
-| closed | active | reopened | Due date cleared unless this same change sets one through D3. The reopen rule wins over D1: a reopen whose phrase is not in the quotes still clears the date [X 5] |
+| closed | active | reopened | Due date cleared unless this same change sets one through D3. It has to be a real reopen of an item closed on an earlier day, not the undoing of a close made today by the model or by the lead. The baseline is the status before the lead's own first status edit in this review if there is one, otherwise the status when the day began; the date is cleared only if that baseline is closed. So the lead setting back an item the model wrongly closed today keeps its date. The reopen rule wins over D1: a reopen whose phrase is not in the quotes still clears the date [X 5] |
 | `open` ↔ `in_progress` | | updated | None |
 | `open` / `in_progress` | `blocked` | blocked [O 1] | None |
 | `blocked` | `open` / `in_progress` | unblocked [O 1] | None. The model is told to use `in_progress` for work that is unblocked and unfinished [X 9] |
@@ -115,7 +115,7 @@ Order inside D1–D4 is fixed: first match wins. Definitions the steps need:
 | Two days | The **phrase** (not the sentence) contains two day expressions that resolve to different dates |
 | Stand-alone forms | Checked **first**, on the whole phrase: "this morning", "this afternoon", "this evening", "end of day" resolve to the standup date |
 | Time-of-day words | Then removed from the phrase: morning, afternoon, evening, after lunch. So "tomorrow morning" becomes "tomorrow" |
-| Day-shifting words | Scanned over the **phrase** after time-of-day removal: next, after, following, before, week, or |
+| Day-shifting words | Scanned over the **phrase** after time-of-day removal: next, last, previous, after, following, before, week, or |
 | Computable day | today, tonight → standup date. tomorrow → standup date + 1. A weekday name → the first such day strictly after the standup date ("Friday" said on a Friday is 7 days on). A written date: a day number with a month name in either order ("17 October", "Oct 17"), with or without a year, or `YYYY-MM-DD`. With no year it is the first such date on or after the standup date. Numeric forms like 10/11 are not computable [O 5] |
 | Arithmetic | Calendar days. Weekends are not skipped: "tomorrow" on a Friday is Saturday [O 5] |
 
@@ -216,9 +216,11 @@ that passed [X 6]. **Pass 2**, in answer order: the field steps of §1.7, then t
 | More than three quotes | Accepted | All are checked; the limit is guidance to the model [O 11] |
 | `update` names an id that does not exist | Rejected | `could_not_verify`, C2 |
 | `update` names a removed item | Moved | Outcome `not_tracked`, reason "removed by lead"; listed with the day's not-tracked entries [X 1] |
-| A change that is not well formed: `kind` not `add` / `update`, an update with no `item_id`, an add with no title, `fields` not an object, `quotes` not a list of text | Rejected | `could_not_verify`, reason "malformed change" |
+| A change that is not well formed: not an object at all, `kind` not `add` / `update`, an update with no `item_id`, an add with no title, `fields` not an object, `quotes` not a list of text | Rejected | `could_not_verify`, reason "malformed change" |
 | `status` not in the vocabulary, or explicitly empty in an update | Corrected | That field is ignored; the rest of the change applies; marked for the lead [O 11] |
 | `title` explicitly empty in an update | Corrected | Field ignored; marked for the lead [O 11] |
+| A field whose value is not text (a list, a number, an object) | Corrected | Field ignored; marked for the lead. Never stored as text. Two exceptions: a one-name list for `owner` is read as that name, and a number for `ticket` as its digits. A list of several owners gives the reason "more than one owner named" and no owner [X 11] |
+| `not_tracked` is not a list | Corrected | Treated as empty |
 | Owner not a known person | Flagged | Applied as given |
 | Owner is another name of a known person | Corrected | Canonical name stored; no flag |
 | Add's ticket matches another item's (approved, or added earlier in this answer) | Flagged | Applied; "possible duplicate of *id*". **Not** flagged when that item is the add's own parent [O 6] |
@@ -231,7 +233,9 @@ that passed [X 6]. **Pass 2**, in answer order: the field steps of §1.7, then t
 | A `not_tracked` entry's quote is not found in the transcript | Flagged | Still listed, marked "quote not found" [O 7] |
 
 Quote matching (C1): both sides are lower-cased, runs of whitespace collapsed, and curly quotes and
-apostrophes straightened; nothing else is normalised. The quote must then be a substring of one turn's words. An ellipsis in
+apostrophes straightened; nothing else is normalised. The quote must then appear in one turn's words as whole words: it
+cannot start or end in the middle of a word. A possessive counts as a word end, so "Wednesday" is found in
+"Wednesday's fine". The same matching is used to find a due phrase inside its quote. An ellipsis in
 a quote therefore fails. A quote is "four words or longer" by whitespace count after normalising; it is "a
 whole turn" if it equals the turn's words ignoring leading and trailing punctuation, and that turn has two
 words or more. If a quote occurs in several turns, the first turn is taken for speaker and turn number.
@@ -258,7 +262,10 @@ speaker, text before the first speaker line, is a valid place for a quote; its s
 | Invalid | Edit with a status not in the vocabulary, or a date not `YYYY-MM-DD` | Rejected |
 | Invalid | Edit with an owner name | Any text is accepted. The input offers the known people (an HTML datalist) and takes free text. A typed name is canonicalised if it matches a known person and is never flagged: the lead is the authority [O 4] |
 | Conflicts | Lead edit after the model's change, same field, same draft | The lead's value stands. One lead history entry per field per review; its `from` is the value the system proposed |
-| Conflicts | Lead sets a date, then reopens the item | The reopen clears the date. The lead sets it again |
+| Conflicts | Lead sets a date on an item that was closed in the approved list, then reopens it | The reopen clears the date. The lead sets it again |
+| Conflicts | Lead closes an item by mistake, then sets it back | Nothing is lost: date and phrase stay, and no correction is recorded |
+| Conflicts | Lead reopens an item that was closed on an earlier day, through a form that also posts its existing date | The date is cleared: an unchanged date is not "setting a date". The page must show that the date went, so the lead does not assume it was kept (for M4) |
+| Conflicts | An edit form posts owner, date and status together | Only the values that differ from the current ones count. An unchanged date keeps its phrase |
 | Conflicts | The model contradicts a value the lead set on an earlier day | Applied like any change: it needs a quote from today. No field is locked |
 | Conflicts | A saved answer refers to an id the current list lacks | C2, could not verify, plus the "different list" note |
 | Conflicts | Two browser tabs | No locking. The last write wins. Stated limit |
@@ -344,7 +351,7 @@ decide what code does.
 | B12 | The model adds an item the lead removed earlier, with no ticket | Applied as a new item. Nothing in code can tell (section 9) |
 | B13 | The model adds an item whose ticket matches a removed item's | Not applied; listed under not tracked as "removed by lead" [O 6] |
 | B14 | An owner is named who is not known | Stored as given, marked for the lead. From then on that name is an existing owner, so it is known |
-| B15 | The lead sets a date | `due_phrase` cleared. No review reason. A past date is accepted and shows as overdue |
+| B15 | The lead sets a date different from the current one | `due_phrase` cleared. No review reason. A past date is accepted and shows as overdue |
 | B16 | Approval | Clears every `review_reasons` list; writes a history entry only on items that had reasons. Could-not-verify changes stay on the day record and are not carried forward |
 | B17 | Approval of a draft with no applied changes | Valid. The day is recorded; the list is unchanged |
 | B18 | A speaker absent from team settings speaks on several days | Listed as a new speaker on the first day only. From the second day the name is found among the speakers of approved days [O 2] |

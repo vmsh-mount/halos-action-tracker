@@ -1,0 +1,16 @@
+{
+  "people": [
+    {"name": "Arjun", "also": [], "role": "lead"},
+    {"name": "Priya", "also": [], "role": "engineer"},
+    {"name": "Dev", "also": ["Devansh"], "role": "engineer"},
+    {"name": "Sana", "also": [], "role": "engineer"}
+  ],
+  "glossary": {
+    "Hermes": "the team's notifications service",
+    "Atlas": "the internal admin dashboard"
+  },
+  "ticket_prefixes": {
+    "PAY": "payments",
+    "APP": "the main app"
+  }
+}

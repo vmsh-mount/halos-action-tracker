@@ -1,0 +1,23 @@
+{
+  "changes": [
+    {"kind": "update", "item_id": "A1",
+     "fields": {"note": "It is the index, not the query; bigger fix", "due_phrase": "Tomorrow"},
+     "quotes": ["Turns out it's the index, not the query", "Tomorrow, probably."]},
+    {"kind": "update", "item_id": "A2",
+     "fields": {"ticket": "PAY-231", "status": "in_progress", "due_phrase": "today", "note": "Token refresh confirmed; needs PR review"},
+     "quotes": ["PAY-231, the auth one.", "fix is going out today"]},
+    {"kind": "add", "ref": "new1",
+     "fields": {"title": "Atlas login is slow", "owner": "Dev"},
+     "quotes": ["someone pinged me about the Atlas login being slow.", "I'll look after."]},
+    {"kind": "add", "ref": "new2",
+     "fields": {"title": "Review the PAY-231 PR", "owner": "Priya", "parent": "A2", "due_phrase": "after this"},
+     "quotes": ["I'll look at Dev's PR after this."]},
+    {"kind": "update", "item_id": "A3",
+     "fields": {"note": "Infra says the cert will be done tomorrow morning"},
+     "quotes": ["They say the cert will be done tomorrow morning."]},
+    {"kind": "update", "item_id": "A5",
+     "fields": {"status": "in_progress", "due_phrase": "Still Monday"},
+     "quotes": ["Export's going fine. Still Monday."]}
+  ],
+  "not_tracked": []
+}

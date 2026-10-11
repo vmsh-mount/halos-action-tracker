@@ -1,0 +1,26 @@
+{
+  "changes": [
+    {"kind": "update", "item_id": "A2",
+     "fields": {"status": "in_progress", "note": "Back: session cookie this time, not the refresh"},
+     "quotes": ["bad news, 231 is back.", "it's the session cookie, not the refresh."]},
+    {"kind": "update", "item_id": "A9",
+     "fields": {"status": "done"},
+     "quotes": ["the search PR, I reviewed it, left two comments"]},
+    {"kind": "update", "item_id": "A1",
+     "fields": {"status": "done", "note": "Merged; watching the numbers"},
+     "quotes": ["Search is merged, I'm watching the numbers, so far so good."]},
+    {"kind": "update", "item_id": "A5",
+     "fields": {"due_phrase": "Wednesday"},
+     "quotes": ["export is going to slip.", "Say Wednesday?", "Wednesday's fine."]},
+    {"kind": "add", "ref": "new1",
+     "fields": {"title": "Hermes retry bug", "owner": "Sana", "ticket": "APP-402", "due_phrase": "tomorrow"},
+     "quotes": ["I'm picking up the Hermes retry bug, APP-402", "Should be done tomorrow, it's small."]},
+    {"kind": "update", "item_id": "A6",
+     "fields": {"owner": "Rohan"},
+     "quotes": ["I can take the onboarding doc, if that's still a thing?", "It's still a thing. Yes, take it."]}
+  ],
+  "not_tracked": [
+    {"quote": "Rohan's starting today.", "reason": "introduction"},
+    {"quote": "Priya and Dev are on it for the next two weeks.", "reason": "staffing, not an action"}
+  ]
+}

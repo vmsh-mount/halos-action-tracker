@@ -14,7 +14,20 @@ Model access goes through OpenRouter. Copy `.env.example` to `.env` and set `OPE
 
 ## How to run the tests
 
-_To be written (M5)._
+```bash
+python3 -m venv .venv
+```
+
+```bash
+.venv/bin/pip install -r requirements.txt
+```
+
+```bash
+.venv/bin/python -m pytest
+```
+
+No API key and no network are needed. So far the tests cover the list engine only, with no model involved;
+tests on saved and live model answers are still to come (M3, M5).
 
 ## Important choices and why
 

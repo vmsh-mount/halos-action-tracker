@@ -73,8 +73,8 @@ Two kinds of change, plus a list of things it chose not to track.
 | `update` | the item's `id`, the fields that change; quotes; optional needs-review reason |
 | `not_tracked` | one quote and a short reason ("already done", "meeting, not an action", "small talk") |
 
-**Quotes.** A change carries one to three quotes. Each quote is a run of words copied exactly from inside a
-single speaker turn: no joining two turns, no "…" to skip words. At least one of them must be four words or
+**Quotes.** A change carries one to three quotes. Each quote is a run of whole words copied exactly from
+inside a single speaker turn: no joining two turns, no "…" to skip words. At least one of them must be four words or
 longer, or be a whole turn of two words or more ("APP-402 merged."). A shorter one ("Sure.") may sit beside
 it but cannot justify a change alone. The speaker is not supplied by the model; code reads it from the turn
 the quote was found in.
@@ -122,7 +122,7 @@ phrase leaves the item's date alone. The first step that matches decides.
 | D1 | The phrase is not inside any of the quotes (a model error) | Existing date untouched | Not stored | Needs review |
 | D2 | Hedged or conditional: the sentence holding the phrase has a hedge word (maybe, probably, perhaps, possibly, might, hopefully, worst case) or a condition word (if, once, unless), or the phrase itself names two different days | Cleared, including any existing date | Stored | Needs review |
 | D3 | The phrase holds one day code can work out, and no day-shifting word. Checked in this order: the stand-alone forms "this morning / afternoon / evening" and "end of day" mean today; then times of day are set aside (morning, afternoon, evening, after lunch); then the day: today, tonight, tomorrow, a weekday name (the next one after the standup date), a written date (day number with month name, with or without a year, or `YYYY-MM-DD`; with no year, the first such date on or after the standup). Other leftover words are ignored, so "Still Monday" and "Should be done tomorrow" work. Calendar days: weekends are not skipped | Set. If it equals the date the item already has, nothing changes | Stored, unless the date is unchanged | — |
-| D4 | The phrase has a day-shifting word (next, after, following, before, week, or), or no day code knows: "next Friday", "next week", "after this", "end of sprint" | Empty. If the item had a date, it is cleared | Stored | Only if a date was cleared |
+| D4 | The phrase has a day-shifting word (next, last, previous, after, following, before, week, or), or no day code knows: "next Friday", "next week", "after this", "end of sprint" | Empty. If the item had a date, it is cleared | Stored | Only if a date was cleared |
 
 D1 and D2 look alike on the page but are different events. D1 is the model's mistake, so nothing it said
 about the date is trusted and the old date stands. D2 is the speaker being unsure, so the old date is gone.
@@ -131,7 +131,9 @@ about the date is trusted and the old date stands. D2 is the speaker being unsur
 
 - **Reopening clears the date.** When a closed item (`done` or `dropped`) moves to an active status and the
   change sets no new date, the old date is cleared (it stays in history). Otherwise the item would return
-  already overdue. This wins over D1: a reopen whose phrase is not in the quotes still clears the date.
+  already overdue. This wins over D1: a reopen whose phrase is not in the quotes still clears the date. It
+  applies only to a real reopen of an item closed on an earlier day. Undoing a close made today, by the
+  model or by the lead, loses nothing.
 - **Updates that change nothing are discarded.** "Still Monday" about an item already due Monday is not a
   change and is not shown as one.
 - **Removing a parent** leaves its parts on the list with the link cleared. The cleared link is recorded in

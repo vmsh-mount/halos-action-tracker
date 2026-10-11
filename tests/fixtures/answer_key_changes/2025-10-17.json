@@ -1,0 +1,26 @@
+{
+  "changes": [
+    {"kind": "update", "item_id": "A11",
+     "fields": {"due_phrase": "Monday"},
+     "quotes": ["so anything of hers rolls to Monday."]},
+    {"kind": "update", "item_id": "A2",
+     "fields": {"status": "done"},
+     "quotes": ["Auth is fixed, for real this time."]},
+    {"kind": "add", "ref": "new1",
+     "fields": {"title": "Retro on PAY-231", "parent": "A2", "due_phrase": "next week"},
+     "quotes": ["We should do a retro on that one next week"]},
+    {"kind": "add", "ref": "new2",
+     "fields": {"title": "Review the Falcon schema draft", "owner": "Dev", "due_phrase": "today"},
+     "quotes": ["Dev's reviewing.", "Yeah, today, after lunch."]},
+    {"kind": "update", "item_id": "A6",
+     "fields": {"status": "in_progress", "note": "Draft ready; going to Priya to check"},
+     "quotes": ["I've got a draft, I'll send it to Priya to check"]},
+    {"kind": "add", "ref": "new3",
+     "fields": {"title": "Check the onboarding doc draft", "owner": "Priya", "parent": "A6"},
+     "quotes": ["I'll send it to Priya to check, since she flagged it.", "Sure."]}
+  ],
+  "not_tracked": [
+    {"quote": "Falcon schema draft is up, I put it in the channel.", "reason": "already done"},
+    {"quote": "Don't deploy on Friday.", "reason": "standing rule, not an action"}
+  ]
+}

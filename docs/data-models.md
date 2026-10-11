@@ -30,15 +30,19 @@ exists at a time.
 | `turns` | The text split by code into speaker turns: number, speaker, words | `{n: 3, speaker: "Dev", text: "Hey. Okay, so, bad news…"}` |
 
 **Splitting into turns.** A line starts a new turn only if it begins with a speaker name followed by a
-colon and a space. A speaker name is one or two words, letters only, each starting with a capital. Every
+colon, with the words after it on the same line or starting on the next. A speaker name is one to three
+words. Each starts with a capital letter in any alphabet, or is a lower-case name particle from a short
+list ("de", "van", "der" …); at least one word is capitalised. Hyphens and apostrophes may appear inside a
+word and a full stop may end it ("José", "Mary-Ann", "O'Brien", "de Souza", "Dr. Rao"). Every
 other line continues the previous turn, so pasted text with wrapped lines still works. "Rohan's benefit:"
-at the start of a wrapped line is not a speaker (apostrophe, lower-case word). Text before the first speaker
+at the start of a wrapped line is not a speaker (its second word has no capital). Text before the first speaker
 line is kept as a turn with no speaker.
 
 If no line in the text starts a speaker turn, the run stops with a message and nothing is sent to the
 model. Otherwise the whole text would count as one turn and any quote would pass check C1.
 
-A stray "Note:" would still pass as a speaker. So any speaker who is not in the team settings is listed on
+A stray "Note:" would still pass as a speaker, and so would a wrapped line that starts "Okay. So:", since a
+full stop may end a word of a name. So any speaker who is not in the team settings is listed on
 the review page as "new speaker" the first day they speak, where the lead can see a real newcomer (Rohan) or
 a mis-split. Once a day with that speaker is approved, the name is no longer new.
 
@@ -145,7 +149,8 @@ Rules:
 - **Editing the same field twice in one review** updates the one lead entry: `from` stays the value the
   system proposed, `to` becomes the lead's latest choice. Counting corrections later is then not skewed by
   the lead changing their mind.
-- A lead-set date has no phrase behind it; the edit also clears `due_phrase`.
+- A lead-set date has no phrase behind it; an edit that changes the date also clears `due_phrase`. An edit
+  that posts the date unchanged leaves the phrase alone and records nothing.
 
 **There is no separate list of lead actions.** Everything the lead does is in these entries (`by: lead`,
 with `action`), plus `approved_at` on the day record. "How often did the lead correct an owner" is a filter

@@ -1,0 +1,27 @@
+{
+  "changes": [
+    {"kind": "add", "ref": "new1",
+     "fields": {"title": "Fix search latency", "owner": "Arjun", "status": "in_progress", "due_phrase": "today, maybe tomorrow"},
+     "quotes": ["Search latency, still on it.", "Should have a fix today, maybe tomorrow worst case."]},
+    {"kind": "add", "ref": "new2",
+     "fields": {"title": "Auth bug from the support ticket", "owner": "Dev"},
+     "quotes": ["Yeah, I had context. I'll take it.", "Cool, Dev on auth then."]},
+    {"kind": "add", "ref": "new3",
+     "fields": {"title": "Hermes staging deploy", "owner": "Sana", "status": "blocked", "note": "Cert expired; with infra, no reply yet"},
+     "quotes": ["the Hermes staging deploy is blocked."]},
+    {"kind": "add", "ref": "new4",
+     "fields": {"title": "Flaky test in CI"},
+     "quotes": ["Should we do something about the flaky test in CI?", "Let's talk about it after, not now."],
+     "review_reason": "Raised, deferred, no decision"},
+    {"kind": "add", "ref": "new5",
+     "fields": {"title": "Export feature", "owner": "Priya", "status": "in_progress", "due_phrase": "Monday"},
+     "quotes": ["I'll start on the export feature.", "Monday is more realistic.", "Fine, Monday."]},
+    {"kind": "add", "ref": "new6",
+     "fields": {"title": "Fix onboarding doc", "due_phrase": "at some point"},
+     "quotes": ["The onboarding doc is out of date.", "Someone should fix that at some point."]}
+  ],
+  "not_tracked": [
+    {"quote": "I replied last night, that's done.", "reason": "already done"},
+    {"quote": "I've got a call at ten fifteen.", "reason": "small talk"}
+  ]
+}
