@@ -139,6 +139,9 @@ Nothing else is discarded silently: a failed change is still visible to the lead
 - "Thursday or Friday" is caught only if the model returns both days in the phrase. If it returns just
   "Thursday", code sets Thursday. Scanning the whole sentence for a second day is not an option: Monday's
   export sentence names Friday, "this morning" and Monday, and is not a hedge.
+- **A real day attached to the wrong thing.** Code checks that a phrase is a day, not whose day it is. On
+  Tuesday infra's cert "will be done tomorrow morning"; if the model returns that as the deploy's due phrase,
+  code sets 15 Oct, against U12. Only the model can avoid it.
 - **Duplicates without a ticket id rest on the model alone.** Nothing in code notices if "Atlas export" is
   added as a new item beside "Export feature". This is the mistake the brief names, so it is the first thing
   `evaluation-checks.md` measures, and the lead's remove button is the only correction for it in this
