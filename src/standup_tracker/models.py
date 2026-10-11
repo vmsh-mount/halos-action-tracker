@@ -127,6 +127,7 @@ class ModelRun(Base):
     notes: list[str] = []
     attempts: list[str] = []
     usage: dict[str, Any] = {}  # token counts as the provider reported them; empty for a replayed answer
+    seconds: float | None = None  # how long the model took to answer, all attempts together
 
 
 class DayRecord(Base):

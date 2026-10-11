@@ -162,7 +162,7 @@ over history entries. This removes a second copy of the same facts that would ha
 |---|---|
 | `standup` | Section 2 |
 | `state` | `draft` or `approved` |
-| `model_run` | Provider, model name, when, the request fingerprint (section 11), any notes from the LLM layer, `attempts` (the raw answer of each attempt, one or two), and `usage` (token counts as the provider reported them; empty for a replayed answer) |
+| `model_run` | Provider, model name, when, the request fingerprint (section 11), any notes from the LLM layer, `attempts` (the raw answer of each attempt, one or two), `usage` (token counts and cost as the provider reported them; empty for a replayed answer), and `seconds` (how long the model took to answer, all attempts together) |
 | `checked_changes` | Section 6, in the order the model gave them |
 | `not_tracked` | The model's list, plus anything code moved here ("removed by lead"). An entry whose quote is not found in the transcript is kept and marked "quote not found" |
 | `new_speakers` | Speakers not in the team settings who have not spoken on an approved day (section 2) |

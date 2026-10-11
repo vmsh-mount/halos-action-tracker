@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import time
 
 from . import prompt
 from .apply import apply_changes
@@ -99,6 +100,7 @@ def submit_standup(
         raise SubmitError(f"{error} Each turn should start like 'Name: words'.") from error
 
     request = prompt.build_request(standup, current_items(state), team, temperature=temperature)
+    started = time.monotonic()
     try:
         proposal = propose(client, request)
     except LLMError as error:
@@ -118,5 +120,6 @@ def submit_standup(
         notes=proposal.response.notes,
         attempts=proposal.attempts,
         usage=proposal.response.usage,
+        seconds=round(time.monotonic() - started, 2),
     )
     return build_draft(state, standup, proposal.changes, proposal.not_tracked, team, model_run=run)

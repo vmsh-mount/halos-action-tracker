@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 356" width="1000" height="356" role="img"
+     aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title id="t">How a standup becomes tracked work</title>
+  <desc id="d">A transcript and the approved list go to the model, which proposes changes with exact quotes. Code checks each change against the transcript; a change whose words were not said is not applied. The lead reviews the draft and approves. The approved list is what the model sees the next day.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1.5 L8 5 L1 8.5" fill="none" stroke="#6a707c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1.5 L8 5 L1 8.5" fill="none" stroke="#4338ca" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="999" height="355" rx="10" fill="#f6f6f7" stroke="#e4e5e9"/>
+
+  <!-- Not-applied branch, above the checking step -->
+  <rect x="286" y="16" width="428" height="28" rx="6" fill="#fdf0ef" stroke="#f2c4c0"/>
+  <text x="500" y="34.5" text-anchor="middle" font-size="12" fill="#b3261e">Words not found in the transcript: not applied, shown to the lead</text>
+  <path d="M500 70 L500 48" fill="none" stroke="#b3261e" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+
+  <!-- Step connectors -->
+  <g fill="none" stroke="#6a707c" stroke-width="1.5">
+    <path d="M200 165 L217 165" marker-end="url(#arrow)"/>
+    <path d="M394 165 L411 165" marker-end="url(#arrow)"/>
+    <path d="M588 165 L605 165" marker-end="url(#arrow)"/>
+    <path d="M782 165 L799 165" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Loop: the approved list feeds tomorrow's run -->
+  <path d="M888 262 L888 300 Q888 308 880 308 L314 308 Q306 308 306 300 L306 266" fill="none" stroke="#4338ca" stroke-width="1.6" marker-end="url(#arrow-accent)"/>
+  <rect x="418" y="296" width="358" height="24" rx="12" fill="#f6f6f7"/>
+  <text x="597" y="312.5" text-anchor="middle" font-size="12" fill="#4338ca" font-weight="600">Tomorrow the model starts from the approved list</text>
+
+  <!-- 1. Team update -->
+  <g>
+    <rect x="26" y="70" width="172" height="190" rx="8" fill="#ffffff" stroke="#e4e5e9"/>
+    <rect x="40" y="84" width="74" height="18" rx="4" fill="#fafafb" stroke="#e4e5e9"/>
+    <text x="77" y="96.5" text-anchor="middle" font-size="10" font-weight="600" fill="#6a707c" letter-spacing=".04em">YOU PASTE</text>
+    <text x="40" y="126" font-size="14" font-weight="650" fill="#15171c">Team update</text>
+    <g>
+      <rect x="40" y="142" width="26" height="7" rx="3.5" fill="#989eab"/><rect x="72" y="142" width="104" height="7" rx="3.5" fill="#e4e5e9"/>
+      <rect x="40" y="158" width="20" height="7" rx="3.5" fill="#989eab"/><rect x="66" y="158" width="84" height="7" rx="3.5" fill="#e4e5e9"/>
+      <rect x="40" y="174" width="30" height="7" rx="3.5" fill="#989eab"/><rect x="76" y="174" width="98" height="7" rx="3.5" fill="#e4e5e9"/>
+      <rect x="40" y="190" width="24" height="7" rx="3.5" fill="#989eab"/><rect x="70" y="190" width="66" height="7" rx="3.5" fill="#e4e5e9"/>
+    </g>
+    <text font-size="11.5" fill="#6a707c"><tspan x="40" y="226">A standup transcript</tspan><tspan x="40" y="242">and its date</tspan></text>
+  </g>
+
+  <!-- 2. Model proposes -->
+  <g>
+    <rect x="220" y="70" width="172" height="190" rx="8" fill="#ffffff" stroke="#c9c5f2"/>
+    <rect x="234" y="84" width="52" height="18" rx="4" fill="#eeedfb" stroke="#c9c5f2"/>
+    <text x="260" y="96.5" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca" letter-spacing=".04em">MODEL</text>
+    <text x="234" y="126" font-size="14" font-weight="650" fill="#15171c">Proposes changes</text>
+    <rect x="234" y="140" width="62" height="20" rx="4" fill="#eeedfb" stroke="#c9c5f2"/>
+    <text x="265" y="154" text-anchor="middle" font-size="11" font-weight="600" fill="#4338ca">Add item</text>
+    <rect x="302" y="140" width="72" height="20" rx="4" fill="#fafafb" stroke="#e4e5e9"/>
+    <text x="338" y="154" text-anchor="middle" font-size="11" font-weight="600" fill="#3d424d">Update A5</text>
+    <path d="M236 172 L236 200" stroke="#d3d5db" stroke-width="2"/>
+    <text font-size="11.5" fill="#3d424d"><tspan x="244" y="182" font-weight="600">Priya:</tspan><tspan x="244" y="197">“Say Wednesday?”</tspan></text>
+    <text font-size="11.5" fill="#6a707c"><tspan x="234" y="226">Each change carries the</tspan><tspan x="234" y="242">exact words behind it</tspan></text>
+  </g>
+
+  <!-- 3. Code checks -->
+  <g>
+    <rect x="414" y="70" width="172" height="190" rx="8" fill="#ffffff" stroke="#e4e5e9"/>
+    <rect x="428" y="84" width="44" height="18" rx="4" fill="#fafafb" stroke="#e4e5e9"/>
+    <text x="450" y="96.5" text-anchor="middle" font-size="10" font-weight="600" fill="#6a707c" letter-spacing=".04em">CODE</text>
+    <text x="428" y="126" font-size="14" font-weight="650" fill="#15171c">Checks every change</text>
+    <g font-size="11.5" fill="#3d424d">
+      <circle cx="435" cy="148" r="6" fill="#1f9d55"/><path d="M432.2 148.2 L434.3 150.3 L438 146" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="448" y="152">Words were really said</text>
+      <circle cx="435" cy="168" r="6" fill="#1f9d55"/><path d="M432.2 168.2 L434.3 170.3 L438 166" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="448" y="172">“Wednesday” → 22 Oct</text>
+      <circle cx="435" cy="188" r="6" fill="none" stroke="#92500a" stroke-width="1.5"/><path d="M435 185 L435 188.6" stroke="#92500a" stroke-width="1.5" stroke-linecap="round"/><circle cx="435" cy="191" r=".9" fill="#92500a"/>
+      <text x="448" y="192" fill="#92500a">“Maybe” → no date, flag</text>
+    </g>
+    <text font-size="11.5" fill="#6a707c"><tspan x="428" y="226">Dates, ids and labels are</tspan><tspan x="428" y="242">worked out here, not guessed</tspan></text>
+  </g>
+
+  <!-- 4. Lead reviews -->
+  <g>
+    <rect x="608" y="70" width="172" height="190" rx="8" fill="#ffffff" stroke="#e4e5e9"/>
+    <rect x="622" y="84" width="44" height="18" rx="4" fill="#ecf6ef" stroke="#bfe0cb"/>
+    <text x="644" y="96.5" text-anchor="middle" font-size="10" font-weight="600" fill="#17663a" letter-spacing=".04em">LEAD</text>
+    <text x="622" y="126" font-size="14" font-weight="650" fill="#15171c">Reviews the draft</text>
+    <rect x="622" y="140" width="40" height="20" rx="4" fill="#ffffff" stroke="#d3d5db"/>
+    <text x="642" y="154" text-anchor="middle" font-size="11" font-weight="600" fill="#3d424d">Edit</text>
+    <rect x="668" y="140" width="58" height="20" rx="4" fill="#ffffff" stroke="#d3d5db"/>
+    <text x="697" y="154" text-anchor="middle" font-size="11" font-weight="600" fill="#b3261e">Remove</text>
+    <rect x="622" y="170" width="136" height="24" rx="5" fill="#4338ca"/>
+    <path d="M633 182.2 L636.4 185.6 L642.6 178.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="649" y="186" font-size="11.5" font-weight="600" fill="#ffffff">Approve changes</text>
+    <text font-size="11.5" fill="#6a707c"><tspan x="622" y="226">Nothing is saved until</tspan><tspan x="622" y="242">the lead approves</tspan></text>
+  </g>
+
+  <!-- 5. Tracked work -->
+  <g>
+    <rect x="802" y="70" width="172" height="190" rx="8" fill="#ffffff" stroke="#c9c5f2"/>
+    <rect x="816" y="84" width="48" height="18" rx="4" fill="#eeedfb" stroke="#c9c5f2"/>
+    <text x="840" y="96.5" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca" letter-spacing=".04em">SAVED</text>
+    <text x="816" y="126" font-size="14" font-weight="650" fill="#15171c">Tracked work</text>
+    <g>
+      <circle cx="822" cy="146" r="5.5" fill="#1f9d55"/><path d="M819.4 146.2 L821.4 148.2 L824.8 144.2" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="834" y="142.5" width="78" height="7" rx="3.5" fill="#d3d5db"/><rect x="926" y="142.5" width="34" height="7" rx="3.5" fill="#e4e5e9"/>
+      <circle cx="822" cy="166" r="4.8" fill="none" stroke="#4338ca" stroke-width="1.4"/><path d="M822 162.6 A3.4 3.4 0 0 1 822 169.4 Z" fill="#4338ca"/>
+      <rect x="834" y="162.5" width="64" height="7" rx="3.5" fill="#989eab"/><rect x="926" y="162.5" width="34" height="7" rx="3.5" fill="#e4e5e9"/>
+      <circle cx="822" cy="186" r="4.8" fill="none" stroke="#989eab" stroke-width="1.4"/>
+      <rect x="834" y="182.5" width="86" height="7" rx="3.5" fill="#989eab"/><rect x="926" y="182.5" width="34" height="7" rx="3.5" fill="#e4e5e9"/>
+    </g>
+    <text font-size="11.5" fill="#6a707c"><tspan x="816" y="226">Owners, due dates, status,</tspan><tspan x="816" y="242">and the words for each</tspan></text>
+  </g>
+</svg>

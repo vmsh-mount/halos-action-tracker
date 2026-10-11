@@ -152,3 +152,8 @@ def test_token_counts_reported_by_the_provider_are_kept_with_the_run(team):
 
     draft = submit(State(), team, WEEK[0], Counted())
     assert draft.model_run.usage == {"prompt_tokens": 3100, "completion_tokens": 900}
+
+
+def test_the_time_the_model_took_is_kept_with_the_run(team):
+    draft = submit(State(), team, WEEK[0], Answers())
+    assert isinstance(draft.model_run.seconds, float) and 0 <= draft.model_run.seconds < 5
