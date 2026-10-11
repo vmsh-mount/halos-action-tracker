@@ -50,7 +50,7 @@ Time budget: 3–5 hours, hard stop at 5.
 |---|---|
 | R15 | All model calls go through one generic LLM interface. No code outside that interface knows which provider or model is in use |
 | R16 | Provider, model name and API key come from configuration (environment variables), not from code |
-| R17 | Default provider is OpenRouter, key read from `OPENROUTER_API_KEY` |
+| R17 | The live provider is OpenRouter, key read from `OPENROUTER_API_KEY`. With a key set it is used; with none, the app runs on saved answers |
 | R18 | The interface has a replay implementation that returns saved responses, so tests and the demo run with no key and no spend |
 | R19 | The lead can also set an item's status directly, including finishing or cancelling it |
 | R20 | Everything the lead does (edits, removals, approvals) is recorded; a removed item is hidden, not deleted |

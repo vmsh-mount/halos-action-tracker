@@ -197,16 +197,17 @@ added) and `removed_on` (empty unless the lead removed it).
 
 | Field | Meaning |
 |---|---|
-| `date` | The standup date; this is what replay looks an answer up by |
-| `request_fingerprint` | A short hash of exactly what was sent to the model when the answer was recorded |
+| `lookup_key` | The standup date plus a short hash of the parsed turns (speaker and words, whitespace collapsed); this is what replay looks an answer up by, and the file's name |
+| `request_fingerprint` | A short hash of exactly what was sent to the model when the answer was recorded: the original request, not a retry |
 | `provider`, `model`, `recorded_at` | Where the answer came from |
 | `answer` | The raw answer |
 
-Stored under `tests/saved_answers/`, one file per date.
+Stored under `tests/saved_answers/`, one file per lookup key.
 
-Replay returns the saved answer for the date. If the fingerprint of today's request differs from the
-recorded one, it still returns the answer and the page shows a warning: "recorded against a different list
-or prompt". This matters for the no-key demo: the reviewer fixes an owner on Monday, which changes what
+Replay returns the saved answer for the lookup key. If there is none, because the transcript is not one we
+recorded, the run stops and says a live model is needed; it never returns an answer to a different
+transcript. If the key matches but the fingerprint of today's request differs from the recorded one, it
+still returns the answer and the page shows a note: "recorded against a different list or prompt". This matters for the no-key demo: the reviewer fixes an owner on Monday, which changes what
 Tuesday sends, and replay must keep working. The usual effect of a mismatch is harmless (the saved answer
 refers to the same ids); the warning is there for the case where it is not.
 
