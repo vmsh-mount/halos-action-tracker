@@ -1,0 +1,19 @@
+Arjun: Final update for the week. Let's close out what we can.
+Sana: The expired temporary exports are cleaned up in staging. I haven't run the cleanup against production. The query has been reviewed, and I added a dry-run count before deletion.
+Arjun: Good. Keep production cleanup separate until we've checked the count with the data team.
+Priya: Export is released. Streaming and cancellation are both in production. I watched the metrics for two hours, and memory usage looks stable.
+Arjun: Excellent. Close the export work.
+Dev: The expired-cookie patch went to staging yesterday. The regression test passes there too. I haven't pushed it to production because the older-client error rate is still low, and I'd like one more day of metrics.
+Arjun: That's reasonable. Don't deploy it today. Let's review the numbers Monday.
+Sana: Migration monitoring is ready. The alerts are configured, and I tested them with a simulated failure.
+Arjun: Thanks. Falcon migration is Monday at nine. Priya and Dev are on the migration; Sana owns monitoring. If either of you sees a blocker, raise it before Monday morning.
+Priya: One concern: the migration script's rollback has only been tested against staging data. We haven't tried it against a production-sized snapshot.
+Arjun: That's worth checking. Dev, can you test the rollback against a production-sized snapshot before Monday?
+Dev: Yes. I'll do it today.
+Rohan: The onboarding doc is published. I got two comments from the team, mostly minor wording changes. I'll incorporate those next week.
+Priya: No need to keep it open just for wording. The main task is done. We can make small edits as they come in.
+Arjun: Agreed. Close it.
+Sana: One last thing. The database cleanup query is ready, but I haven't run it in production. We need the data team's confirmation of the dry-run count first.
+Arjun: Correct. Leave production cleanup blocked until they confirm the count.
+Dev: Also, my laptop is still taking forty seconds to start the service.
+Arjun: Noted. Still not making it a ticket.

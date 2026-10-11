@@ -1,0 +1,19 @@
+Arjun: Let's go around quickly.
+Dev: The expired-cookie patch is ready. Regression test is passing locally. I haven't deployed it yet. I'll put it on staging today.
+Arjun: Good. Keep the new ticket separate from the old 231.
+Priya: Export cancellation is fixed. If the client disconnects, the server stops generating the file. I tested it with a large export. We should be good to release tomorrow.
+Arjun: Did you test the small exports too?
+Priya: Yes, the existing tests pass. I'll run the full suite before release.
+Sana: I checked the retention policy. Audit records need to stay for ninety days. Temporary exports older than seven days can be removed. I wrote a cleanup query, but I haven't run it yet.
+Arjun: Have someone review the query before you execute it. We don't want to delete customer data by mistake.
+Sana: Priya, can you review it?
+Priya: Sure. Send it over. I'll review it tomorrow morning.
+Rohan: Priya tested the onboarding instructions on a clean machine. Everything worked. She suggested adding a troubleshooting section, but that's not required for the first version.
+Priya: Correct. The existing doc is good enough to share. The troubleshooting section can be a follow-up if we find recurring issues.
+Arjun: Great. Rohan, publish the onboarding doc today.
+Rohan: Done.
+Dev: Falcon migration review is complete. All comments are resolved. We're ready for the migration.
+Arjun: Let's schedule the migration for Monday morning. Priya and Dev, you'll both be on it. Sana, please make sure the monitoring dashboard is ready before then.
+Sana: It's mostly ready. I'll finish the migration-specific alerts by Monday morning.
+Priya: Export release is tomorrow, but I haven't decided whether to include the streaming change in the same release as the cancellation fix.
+Arjun: Keep them together if the tests pass. If they don't, ship neither until we understand the failure.

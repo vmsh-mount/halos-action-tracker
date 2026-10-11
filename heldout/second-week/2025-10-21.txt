@@ -1,0 +1,25 @@
+Arjun: Let's start with anything that changed overnight.
+Sana: APP-402 went to production this morning. I watched the logs for an hour. No more infinite retries on 400 responses.
+Arjun: Great. Close that out.
+Dev: I fixed the Falcon rollback path. Priya's comments are addressed, and the migration script is ready for another review.
+Priya: I checked the rollback changes. Those are good now. I haven't checked the other two comments yet.
+Arjun: Dev, can you get the remaining review done today? We need the migration ready before the end of the week.
+Dev: Yep.
+Rohan: Priya reviewed the onboarding doc. There are a bunch of broken links, so I'm fixing those now. She also wants a section explaining how to run the service locally.
+Priya: Correct. The links are the immediate thing. The local setup section can come after that.
+Arjun: Rohan, can you send the updated doc by Thursday?
+Rohan: I'll try. I need to check a few things with Dev before writing the setup section.
+Priya: Export is in trouble. The million-row test used nearly all the available memory. It works for smaller files, but we can't ship it like this.
+Arjun: Okay, don't ship it yet. Can we stream the output instead of building the whole file in memory?
+Priya: Yes, that's what I'm looking at. I should know by tomorrow whether the change is small or needs a bigger redesign.
+Dev: The old Android clients are still sending a few refresh errors. It's a very small number, but it's not zero.
+Arjun: Are those definitely the same auth issue?
+Dev: Not sure yet. The request pattern looks similar, but I need to inspect the client versions.
+Arjun: Please investigate. Don't reopen 231 until we know it's the same cause.
+Sana: The staging database alert fired again at 11:20. This time it lasted twelve minutes. I checked the dashboard, and storage usage is at 86%.
+Arjun: That sounds less transient. Sana, investigate what's consuming the space and report back tomorrow. No need to change anything yet.
+Rohan: Random question: does anyone know why the local service takes so long to start on my laptop?
+Dev: How long?
+Rohan: About forty seconds.
+Dev: Mine takes thirty. That's just the universe reminding us to get coffee.
+Arjun: Let's keep that out of the action list for now.

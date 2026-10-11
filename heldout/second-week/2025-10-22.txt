@@ -1,0 +1,20 @@
+Arjun: Dev, any progress on the Android issue?
+Dev: I checked the logs. It's the same token refresh path, but a different failure. Older clients are reusing an expired session cookie. I can patch the server to reject it properly. I'll have a fix ready tomorrow.
+Arjun: Is that part of 231?
+Dev: Related, but not exactly the same bug. I'd rather track it separately so we don't lose the distinction.
+Arjun: Agreed. Create a separate ticket. We should also add a regression test for the expired-cookie case.
+Dev: I'll add the test with the fix.
+Priya: The streaming export change is working. The million-row test used much less memory. There's still an issue with clients disconnecting halfway through, though. The server keeps generating the rest of the file.
+Arjun: Can you fix the cancellation behavior by Friday?
+Priya: Probably. I need to check how the response stream closes in Spring. If that works the way I expect, Friday is realistic.
+Sana: Database storage is at 91% now. I found a pile of old audit records and some temporary exports. I think we can clean up the exports, but I don't want to delete anything until we know the retention policy.
+Arjun: Don't delete the audit records. Sana, find out the retention policy and identify which temporary exports are safe to remove. Let's have that by tomorrow.
+Rohan: The onboarding links are fixed. The local setup section is drafted too, but I haven't tested it on a clean machine.
+Priya: I'll test it on mine after lunch.
+Arjun: Good. Rohan, keep the doc open until Priya confirms the setup steps work.
+Dev: Falcon migration is ready from my side. Priya, can you do one final review today?
+Priya: I can review the migration today, but I'm tied up with export until the afternoon. I'll do Falcon after that.
+Arjun: That's fine. Don't rush the review.
+Sana: By the way, the office is doing a team lunch on Friday. Anyone vegetarian?
+Rohan: Me.
+Dev: That's a very important production dependency.

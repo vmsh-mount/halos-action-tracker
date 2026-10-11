@@ -1,0 +1,19 @@
+Arjun: Morning, everyone. Quick one. Dev, how's 231 looking? Please tell me we're not doing this again.
+Dev: No new reports over the weekend. I've been watching the error rate. Looks clean, but I wouldn't call it completely done until we've checked the older Android clients.
+Arjun: Fair. Can you check those by Wednesday?
+Dev: Yeah, I'll pull the numbers today and compare them with the previous release. Should have an answer tomorrow.
+Priya: Falcon schema review is done from my side. I left three comments on the migration script. Dev, one of them is about the rollback path.
+Dev: Saw those. I'll fix the rollback today. The other two are mostly naming.
+Arjun: Okay. We shouldn't run the migration until that rollback is sorted.
+Sana: Hermes retry bug is fixed. APP-402 is deployed to staging, and the test cases for 400 and 500 responses are passing. I haven't pushed it to production yet.
+Arjun: Good. Let's get that into production tomorrow, assuming the staging metrics stay clean.
+Sana: Sure.
+Rohan: I sent the onboarding doc to Priya yesterday evening. She hasn't reviewed it yet, I think.
+Priya: I saw it. I'll review it by tomorrow afternoon.
+Arjun: Thanks. Also, the search dashboard looks much better after the merge. Arjun's extremely happy with Arjun's own work.
+Dev: That's a worrying sign.
+Arjun: Moving on. Priya, the export feature?
+Priya: The implementation is mostly there. The CSV encoding issue is fixed, but I haven't tested large exports yet. I'll test a million-row export today. If memory usage is okay, we can still target Wednesday.
+Arjun: Fine. Let's not promise Wednesday until we have those numbers.
+Sana: One more thing. The staging database storage alert fired this morning. It cleared on its own after five minutes. Probably nothing.
+Arjun: Let's not create a ticket for every transient alert. Keep an eye on it and mention it if it happens again.

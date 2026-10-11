@@ -1,0 +1,192 @@
+
+== 2025-10-20 (draft) - api / openai/gpt-5-mini
+  A2   reopened + dated + updated due: None -> 2025-10-22, due_phrase: None -> Wednesday, status: done -> in_progress, note: Back: session cookie this time, not the refresh -> Need to check older Android clients; Dev watching the error rate and will compare with the previous release.
+         "Looks clean, but I wouldn't call it completely done until we've checked the older Android clients." / "Can you check those by Wednesday?" / "I'll pull the numbers today and compare them with the previous release. Should have an answer tomorrow."
+  A11  updated + re-dated       due: 2025-10-20 -> 2025-10-21, due_phrase: Monday -> tomorrow, status: open -> in_progress, note: None -> APP-402 deployed to staging; tests for 400 and 500 responses passing; not yet pushed to production.
+         "Hermes retry bug is fixed. APP-402 is deployed to staging, and the test cases for 400 and 500 responses are passing. I haven't pushed it to production yet." / "Let's get that into production tomorrow, assuming the staging metrics stay clean."
+  A5   updated                  note: None -> Priya to test a million-row export today; will target Wednesday if memory usage is okay.
+         "The implementation is mostly there. The CSV encoding issue is fixed, but I haven't tested large exports yet. I'll test a million-row export today. If memory usage is okay, we can still target Wednesday." / "Fine. Let's not promise Wednesday until we have those numbers."
+  A13  updated + re-dated       due: 2025-10-17 -> 2025-10-20, status: open -> in_progress, note: None -> Dev to fix the rollback path; Priya's review done with three comments (two naming, one rollback).
+         "Falcon schema review is done from my side. I left three comments on the migration script. Dev, one of them is about the rollback path." / "I'll fix the rollback today. The other two are mostly naming."
+  A14  updated + dated          due: None -> 2025-10-21, due_phrase: None -> tomorrow afternoon, status: open -> in_progress
+         "I sent the onboarding doc to Priya yesterday evening." / "I'll review it by tomorrow afternoon."
+  A15  added                    title:  -> Watch staging DB storage alerts, status:  -> open, note: None -> Alert fired and cleared after five minutes; watch and report if it recurs.
+         "The staging database storage alert fired this morning. It cleared on its own after five minutes. Probably nothing." / "Let's not create a ticket for every transient alert. Keep an eye on it and mention it if it happens again."
+  not tracked: small talk - "Also, the search dashboard looks much better after the merge. Arjun's extremely happy with Arjun's own work."
+  not tracked: small talk - "That's a worrying sign."
+
+The list (15 items):
+  A1   done        Arjun    due -          Fix search latency
+  A2   in_progress Dev      due 2025-10-22 Auth bug from the support ticket
+  A3   done        Sana     due -          Hermes staging deploy
+  A4   open        -        due -          Flaky test in CI
+  A5   in_progress Priya    due 2025-10-22 Export feature
+  A6   in_progress Rohan    due -          Fix onboarding doc
+  A7   done        Dev      due -          Atlas login is slow
+  A8   done        Priya    due -          Review the PAY-231 PR
+  A9   done        Dev      due 2025-10-15 Review the search PR
+  A10  open        Arjun    due 2025-10-15 Send the Falcon doc
+  A11  in_progress Sana     due 2025-10-21 Hermes retry bug
+  A12  open        -        due -          Retro on PAY-231
+  A13  in_progress Dev      due 2025-10-20 Review the Falcon schema draft
+  A14  in_progress Priya    due 2025-10-21 Check the onboarding doc draft
+  A15  open        -        due -          Watch staging DB storage alerts  [needs review: No owner was assigned; lead to decide who will watch this.]
+
+== 2025-10-21 (draft) - api / openai/gpt-5-mini
+  A11  closed + updated         status: in_progress -> done, note: APP-402 deployed to staging; tests for 400 and 500 responses passing; not yet pushed to production. -> Deployed to production; no more infinite retries on 400 responses; watched logs for an hour.
+         "APP-402 went to production this morning. I watched the logs for an hour. No more infinite retries on 400 responses." / "Great. Close that out."
+  A13  re-dated + updated       due: 2025-10-20 -> 2025-10-21, note: Dev to fix the rollback path; Priya's review done with three comments (two naming, one rollback). -> Rollback path fixed; migration script ready for another review; Priya checked the rollback; Dev to finish remaining review today.
+         "Dev, can you get the remaining review done today?" / "Yep."
+  A5   updated                  note: Priya to test a million-row export today; will target Wednesday if memory usage is okay. -> Million-row test used nearly all available memory; exploring streaming as an alternative; will know by tomorrow whether the change is small or needs a larger redesign.
+         "The million-row test used nearly all the available memory." / "I should know by tomorrow whether the change is small or needs a bigger redesign."
+  A6   dated + updated          due: None -> 2025-10-23, due_phrase: at some point -> Thursday, note: Draft ready; going to Priya to check -> Fixing broken links now; local setup section to follow; needs to check a few things with Dev before writing the setup section.
+         "Rohan, can you send the updated doc by Thursday?" / "I'll try. I need to check a few things with Dev before writing the setup section."
+  A14  closed + updated         status: in_progress -> done, note: None -> Priya reviewed the onboarding doc; identified broken links.
+         "Priya reviewed the onboarding doc."
+  A2   updated                  note: Need to check older Android clients; Dev watching the error rate and will compare with the previous release. -> Old Android clients still sending a few refresh errors; Dev to inspect client versions; do not reopen PAY-231 until cause confirmed.
+         "The old Android clients are still sending a few refresh errors. It's a very small number, but it's not zero." / "Not sure yet. The request pattern looks similar, but I need to inspect the client versions."
+  A15  updated + picked up + dated owner: None -> Sana, due: None -> 2025-10-22, due_phrase: None -> tomorrow, status: open -> in_progress, note: Alert fired and cleared after five minutes; watch and report if it recurs. -> Alert fired at 11:20 and lasted twelve minutes; storage usage at 86%; investigate what's consuming the space and report back.
+         "The staging database alert fired again at 11:20. This time it lasted twelve minutes. I checked the dashboard, and storage usage is at 86%." / "Sana, investigate what's consuming the space and report back tomorrow. No need to change anything yet."
+  not tracked: Lead decided the local service startup/performance chatter is not an action item for the list. - "Let's keep that out of the action list for now."
+
+The list (15 items):
+  A1   done        Arjun    due -          Fix search latency
+  A2   in_progress Dev      due 2025-10-22 Auth bug from the support ticket
+  A3   done        Sana     due -          Hermes staging deploy
+  A4   open        -        due -          Flaky test in CI
+  A5   in_progress Priya    due 2025-10-22 Export feature
+  A6   in_progress Rohan    due 2025-10-23 Fix onboarding doc  [needs review: Rohan said "I'll try" about Thursday — lead may want to confirm the commitment.]
+  A7   done        Dev      due -          Atlas login is slow
+  A8   done        Priya    due -          Review the PAY-231 PR
+  A9   done        Dev      due 2025-10-15 Review the search PR
+  A10  open        Arjun    due 2025-10-15 Send the Falcon doc
+  A11  done        Sana     due 2025-10-21 Hermes retry bug
+  A12  open        -        due -          Retro on PAY-231
+  A13  in_progress Dev      due 2025-10-21 Review the Falcon schema draft
+  A14  done        Priya    due 2025-10-21 Check the onboarding doc draft
+  A15  in_progress Sana     due 2025-10-22 Watch staging DB storage alerts
+
+== 2025-10-22 (draft) - api / openai/gpt-5-mini
+  A16  added                    title:  -> Fix expired-session-cookie token-refresh bug on old Android clients, owner: None -> Dev, due: None -> 2025-10-23, due_phrase: None -> tomorrow, status:  -> in_progress, note: None -> Separate bug from PAY-231; will add a regression test with the fix
+         "I can patch the server to reject it properly." / "I'll have a fix ready tomorrow." / "We should also add a regression test for the expired-cookie case."
+  A5   re-dated + updated       due: 2025-10-22 -> 2025-10-24, due_phrase: Wednesday -> Friday, note: Million-row test used nearly all available memory; exploring streaming as an alternative; will know by tomorrow whether the change is small or needs a larger redesign. -> Streaming change working; clients disconnecting halfway through; needs fix for cancellation behavior so server stops generating the rest of the file
+         "There's still an issue with clients disconnecting halfway through, though." / "Can you fix the cancellation behavior by Friday?" / "If that works the way I expect, Friday is realistic."
+  A15  re-dated + updated       due: 2025-10-22 -> 2025-10-23, note: Alert fired at 11:20 and lasted twelve minutes; storage usage at 86%; investigate what's consuming the space and report back. -> Found old audit records and temporary exports; do not delete audit records; find retention policy and identify which temporary exports are safe to remove
+         "I found a pile of old audit records and some temporary exports." / "Don't delete the audit records." / "Let's have that by tomorrow."
+  A17  added                    title:  -> Test onboarding local setup, owner: None -> Priya, due_phrase: None -> after lunch, status:  -> open, parent: None -> A6, note: None -> Priya to test Rohan's local setup section on her machine
+         "I'll test it on mine after lunch." / "keep the doc open until Priya confirms the setup steps work"
+  A6   updated                  note: Fixing broken links now; local setup section to follow; needs to check a few things with Dev before writing the setup section. -> Local setup section drafted; Rohan has not tested on a clean machine; keep the doc open until Priya confirms the setup steps work
+         "The local setup section is drafted too, but I haven't tested it on a clean machine." / "keep the doc open until Priya confirms the setup steps work"
+  A18  added                    title:  -> Final review of the Falcon migration schema, owner: None -> Priya, due: None -> 2025-10-22, due_phrase: None -> today, status:  -> open, parent: None -> A13, note: None -> Priya to perform final review after the afternoon (once export work is done)
+         "Falcon migration is ready from my side." / "I can review the migration today, but I'm tied up with export until the afternoon. I'll do Falcon after that."
+  A13  updated                  note: Rollback path fixed; migration script ready for another review; Priya checked the rollback; Dev to finish remaining review today. -> Ready from Dev; awaiting Priya's final review
+         "Falcon migration is ready from my side." / "I can review the migration today, but I'm tied up with export until the afternoon. I'll do Falcon after that."
+  not tracked: scheduled office event — not team work to track - "By the way, the office is doing a team lunch on Friday. Anyone vegetarian?"
+  not tracked: small talk / joke, not an action item - "That's a very important production dependency."
+
+The list (18 items):
+  A1   done        Arjun    due -          Fix search latency
+  A2   in_progress Dev      due 2025-10-22 Auth bug from the support ticket
+  A3   done        Sana     due -          Hermes staging deploy
+  A4   open        -        due -          Flaky test in CI
+  A5   in_progress Priya    due 2025-10-24 Export feature
+  A6   in_progress Rohan    due 2025-10-23 Fix onboarding doc
+  A7   done        Dev      due -          Atlas login is slow
+  A8   done        Priya    due -          Review the PAY-231 PR
+  A9   done        Dev      due 2025-10-15 Review the search PR
+  A10  open        Arjun    due 2025-10-15 Send the Falcon doc
+  A11  done        Sana     due 2025-10-21 Hermes retry bug
+  A12  open        -        due -          Retro on PAY-231
+  A13  in_progress Dev      due 2025-10-21 Review the Falcon schema draft
+  A14  done        Priya    due 2025-10-21 Check the onboarding doc draft
+  A15  in_progress Sana     due 2025-10-23 Watch staging DB storage alerts
+  A16  in_progress Dev      due 2025-10-23 Fix expired-session-cookie token-refresh bug on old Android clients
+  A17  open        Priya    due -          Test onboarding local setup
+  A18  open        Priya    due 2025-10-22 Final review of the Falcon migration schema
+
+== 2025-10-23 (draft) - api / openai/gpt-5-mini
+  A16  updated                  note: Separate bug from PAY-231; will add a regression test with the fix -> Regression test passing locally; will put the patch on staging today.
+         "The expired-cookie patch is ready." / "I'll put it on staging today."
+  A5   closed + updated         status: in_progress -> done, note: Streaming change working; clients disconnecting halfway through; needs fix for cancellation behavior so server stops generating the rest of the file -> Fix implemented; ready for release tomorrow; Priya will run the full test suite before release; undecided whether to include the streaming change.
+         "Export cancellation is fixed." / "I'll run the full suite before release." / "Export release is tomorrow, but I haven't decided whether to include the streaming change in the same release as the cancellation fix."
+  A15  updated                  note: Found old audit records and temporary exports; do not delete audit records; find retention policy and identify which temporary exports are safe to remove -> Retention policy: audit records kept 90 days; temporary exports older than seven days can be removed; wrote cleanup query but hasn't run it yet.
+         "Audit records need to stay for ninety days." / "I wrote a cleanup query, but I haven't run it yet."
+  A19  added                    title:  -> Review cleanup query for temporary exports, owner: None -> Priya, due: None -> 2025-10-24, due_phrase: None -> tomorrow morning, status:  -> open, parent: None -> A15, note: None -> Sana wrote the query; it has not been executed yet.
+         "Priya, can you review it?" / "I'll review it tomorrow morning."
+  A6   closed + updated         status: in_progress -> done, note: Local setup section drafted; Rohan has not tested on a clean machine; keep the doc open until Priya confirms the setup steps work -> Published.
+         "Priya tested the onboarding instructions on a clean machine. Everything worked." / "Rohan, publish the onboarding doc today." / "Done."
+  A17  closed + updated         status: open -> done, note: Priya to test Rohan's local setup section on her machine -> Priya tested Rohan's local setup on a clean machine; it worked.
+         "Priya tested the onboarding instructions on a clean machine. Everything worked." / "Correct. The existing doc is good enough to share. The troubleshooting section can be a follow-up if we find recurring issues."
+  A13  closed + updated         status: in_progress -> done, note: Ready from Dev; awaiting Priya's final review -> All comments resolved; ready for the migration.
+         "Falcon migration review is complete. All comments are resolved. We're ready for the migration."
+  A20  added                    title:  -> Run Falcon migration, due: None -> 2025-10-27, due_phrase: None -> Monday morning, status:  -> open, parent: None -> A13, note: None -> Priya and Dev will both be on the migration.
+         "Let's schedule the migration for Monday morning. Priya and Dev, you'll both be on it."
+  A21  added                    title:  -> Finish migration-specific alerts, owner: None -> Sana, due: None -> 2025-10-27, due_phrase: None -> Monday morning, status:  -> in_progress, parent: None -> A20, note: None -> Will complete alerts before the migration.
+         "It's mostly ready. I'll finish the migration-specific alerts by Monday morning."
+
+The list (21 items):
+  A1   done        Arjun    due -          Fix search latency
+  A2   in_progress Dev      due 2025-10-22 Auth bug from the support ticket
+  A3   done        Sana     due -          Hermes staging deploy
+  A4   open        -        due -          Flaky test in CI
+  A5   done        Priya    due 2025-10-24 Export feature  [needs review: Priya hasn't decided whether to include the streaming change in the release; lead to confirm whether to include it.]
+  A6   done        Rohan    due 2025-10-23 Fix onboarding doc
+  A7   done        Dev      due -          Atlas login is slow
+  A8   done        Priya    due -          Review the PAY-231 PR
+  A9   done        Dev      due 2025-10-15 Review the search PR
+  A10  open        Arjun    due 2025-10-15 Send the Falcon doc
+  A11  done        Sana     due 2025-10-21 Hermes retry bug
+  A12  open        -        due -          Retro on PAY-231
+  A13  done        Dev      due 2025-10-21 Review the Falcon schema draft
+  A14  done        Priya    due 2025-10-21 Check the onboarding doc draft
+  A15  in_progress Sana     due 2025-10-23 Watch staging DB storage alerts
+  A16  in_progress Dev      due 2025-10-23 Fix expired-session-cookie token-refresh bug on old Android clients
+  A17  done        Priya    due -          Test onboarding local setup
+  A18  open        Priya    due 2025-10-22 Final review of the Falcon migration schema
+  A19  open        Priya    due 2025-10-24 Review cleanup query for temporary exports
+  A20  open        -        due 2025-10-27 Run Falcon migration  [needs review: Priya and Dev are named as participants; no single owner was assigned — lead to confirm the owner or point person.]
+  A21  in_progress Sana     due 2025-10-27 Finish migration-specific alerts
+
+== 2025-10-24 (draft) - api / openai/gpt-5-mini
+  A15  updated                  note: Retention policy: audit records kept 90 days; temporary exports older than seven days can be removed; wrote cleanup query but hasn't run it yet. -> Expired temporary exports cleaned up in staging; dry-run count added; not run in production; waiting on data-team confirmation of the dry-run count.
+         "The expired temporary exports are cleaned up in staging." / "The database cleanup query is ready, but I haven't run it in production."
+  A22  added                    title:  -> Run cleanup of expired temporary exports in production, owner: None -> Sana, status:  -> blocked, parent: None -> A15, note: None -> Waiting for data-team confirmation of the dry-run count before running in production.
+         "The database cleanup query is ready, but I haven't run it in production." / "Leave production cleanup blocked until they confirm the count."
+  A19  closed + reassigned + updated owner: Priya -> Sana, status: open -> done, note: Sana wrote the query; it has not been executed yet. -> Query reviewed; dry-run count added; not executed in production.
+         "The query has been reviewed, and I added a dry-run count before deletion." / "The database cleanup query is ready, but I haven't run it in production."
+  A5   updated                  note: Fix implemented; ready for release tomorrow; Priya will run the full test suite before release; undecided whether to include the streaming change. -> Released to production; streaming and cancellation included; I watched the metrics for two hours and memory usage looks stable.
+         "Export is released. Streaming and cancellation are both in production. I watched the metrics for two hours, and memory usage looks stable." / "Close the export work."
+  A16  re-dated + updated       due: 2025-10-23 -> 2025-10-27, due_phrase: tomorrow -> Monday, note: Regression test passing locally; will put the patch on staging today. -> Patch on staging; regression tests passing there; will wait for Monday metrics before deploying to production.
+         "The expired-cookie patch went to staging yesterday. The regression test passes there too." / "Don't deploy it today. Let's review the numbers Monday."
+  A21  closed + updated         status: in_progress -> done, note: Will complete alerts before the migration. -> Alerts configured and tested with a simulated failure; monitoring ready for the migration.
+         "Migration monitoring is ready. The alerts are configured, and I tested them with a simulated failure." / "Priya and Dev are on the migration; Sana owns monitoring."
+  A20  updated                  note: Priya and Dev will both be on the migration. -> Priya and Dev are on the migration; Sana owns monitoring.
+         "Falcon migration is Monday at nine." / "Priya and Dev are on the migration; Sana owns monitoring."
+  A23  added                    title:  -> Test the migration rollback against a production-sized snapshot, owner: None -> Dev, due: None -> 2025-10-24, due_phrase: None -> today, status:  -> in_progress, parent: None -> A20, note: None -> Test rollback on a production-sized snapshot before the Monday migration.
+         "Dev, can you test the rollback against a production-sized snapshot before Monday?" / "Yes. I'll do it today."
+  not tracked: Not being made a ticket per Arjun. - "Also, my laptop is still taking forty seconds to start the service."
+
+The list (23 items):
+  A1   done        Arjun    due -          Fix search latency
+  A2   in_progress Dev      due 2025-10-22 Auth bug from the support ticket
+  A3   done        Sana     due -          Hermes staging deploy
+  A4   open        -        due -          Flaky test in CI
+  A5   done        Priya    due 2025-10-24 Export feature
+  A6   done        Rohan    due 2025-10-23 Fix onboarding doc
+  A7   done        Dev      due -          Atlas login is slow
+  A8   done        Priya    due -          Review the PAY-231 PR
+  A9   done        Dev      due 2025-10-15 Review the search PR
+  A10  open        Arjun    due 2025-10-15 Send the Falcon doc
+  A11  done        Sana     due 2025-10-21 Hermes retry bug
+  A12  open        -        due -          Retro on PAY-231
+  A13  done        Dev      due 2025-10-21 Review the Falcon schema draft
+  A14  done        Priya    due 2025-10-21 Check the onboarding doc draft
+  A15  in_progress Sana     due 2025-10-23 Watch staging DB storage alerts
+  A16  in_progress Dev      due 2025-10-27 Fix expired-session-cookie token-refresh bug on old Android clients
+  A17  done        Priya    due -          Test onboarding local setup
+  A18  open        Priya    due 2025-10-22 Final review of the Falcon migration schema
+  A19  done        Sana     due 2025-10-24 Review cleanup query for temporary exports
+  A20  open        -        due 2025-10-27 Run Falcon migration
+  A21  done        Sana     due 2025-10-27 Finish migration-specific alerts
+  A22  blocked     Sana     due -          Run cleanup of expired temporary exports in production
+  A23  in_progress Dev      due 2025-10-24 Test the migration rollback against a production-sized snapshot
