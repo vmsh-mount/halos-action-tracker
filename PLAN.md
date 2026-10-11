@@ -52,6 +52,8 @@ Time budget: 3–5 hours, hard stop at 5.
 | R16 | Provider, model name and API key come from configuration (environment variables), not from code |
 | R17 | Default provider is OpenRouter, key read from `OPENROUTER_API_KEY` |
 | R18 | The interface has a replay implementation that returns saved responses, so tests and the demo run with no key and no spend |
+| R19 | The lead can also set an item's status directly, including finishing or cancelling it |
+| R20 | Everything the lead does (edits, removals, approvals) is recorded; a removed item is hidden, not deleted |
 
 ## 3. Milestones
 
@@ -75,7 +77,7 @@ Total 4 h 20 min, leaving 40 min of slack. If M4 runs long, M5 is protected and 
 - A database, deployment, hosting.
 - Real Linear / Jira / Slack integration.
 - Audio or speech-to-text; input is text only.
-- Editing fields other than owner and date (others only if time is left).
+- Editing fields other than owner, date and status (title, note, parent only if time is left).
 - Undo after approval, or re-processing an earlier day.
 - Splitting or merging items by hand.
 - Notifications, reminders, overdue alerts.
@@ -121,9 +123,9 @@ Written and approved in M1, before any implementation.
 
 | Document | Answers |
 |---|---|
-| `docs/design.md` | What an item and a change look like; how the model's output is checked and applied; how unclear ownership, vague dates, reopened items and non-items are treated |
-| `docs/architecture.md` | Components and how they connect, the LLM interface, storage, the review flow from draft to approved |
-| `docs/testing.md` | Which checks, what each one demonstrates, saved versus live |
+| `docs/action-item-rules.md` | What an item and a change look like; how the model's output is checked and applied; how unclear ownership, vague dates, reopened items and non-items are treated |
+| `docs/components-and-data-flow.md` | Components and how they connect, the LLM interface, storage, the review flow from draft to approved |
+| `docs/evaluation-checks.md` | Which checks, what each one demonstrates, saved versus live |
 
 ## 7. Risks
 
