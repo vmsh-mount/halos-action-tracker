@@ -57,7 +57,7 @@ Eight items after Tuesday.
 | Update **A3** | **Done** | Sana: "Hermes staging deploy went out this morning, all green." | Staying blocked. It goes blocked → done with no step between |
 | Add **A10** Send Falcon doc | Owner Arjun. Due **15 Oct**, phrase "tonight" | Priya: "Is there a doc or anything?" Arjun: "I'll send something tonight." | Skipped: four words, and "something" only makes sense with Priya's question |
 | Not tracked: Falcon kickoff | No item | Arjun: "Falcon kickoff is Thursday, two pm." | An item due Thursday. It is a meeting with a time already set |
-| **A5**: no date change | The date does not show as changed | Priya: "The Atlas export is still on for Monday." | **The duplicate the brief warns about.** First time it is called "Atlas export"; there is no ticket, so code cannot notice a new item |
+| **A5**: no date change | The date does not show as changed | Priya: "The Atlas export is still on for Monday." | **The classic duplicate.** First time it is called "Atlas export"; there is no ticket, so code cannot notice a new item |
 
 Ten items after Wednesday.
 

@@ -51,7 +51,7 @@ set), with three runs going at once. From now on each call's time is recorded wi
 |---|---|---|
 | Lead's corrections per update | The real cost of a mistake is the lead's time | Reviewed days from real use. The owner's three test days show 6 corrections on 13 changes, which is an anecdote |
 | Items needing attention per update | Too many flags and the lead stops reading them | The same |
-| Time for a lead to review a day | The brief asks that the lead can check quickly | Watching someone do it |
+| Time for a lead to review a day | The lead has to be able to check quickly | Watching someone do it |
 | A different team | Nothing so far shows the prompt is not fitted to this one | A second team's transcripts and settings |
 
 ## The levers, most promising first

@@ -2,7 +2,7 @@
 
 Status: **proposal for review** (second revision, after review). No code exists yet.
 
-The brief asks for "a few meaningful tests" aimed at what a model gets wrong, and for honesty about which
+The goal is a few meaningful tests aimed at what a model gets wrong, and for honesty about which
 results came from saved model answers and which from a live model. This document names the tests, says what
 each demonstrates, and says what a pass does and does not mean. The method (properties, anchors, homes, the
 held-out protocol) is in `generalisation-beyond-the-five-standups.md` sections 5 and 6 and is not repeated.
@@ -20,7 +20,7 @@ The first two run with `pytest`, need no key and cost nothing. The last two need
 
 ## 2. The headline checks
 
-These are the "few meaningful tests". Each maps to a mistake the brief names.
+These are the core tests. Each maps to a known model mistake.
 
 | # | Check | The mistake it targets | What a pass demonstrates | Runs as |
 |---|---|---|---|---|

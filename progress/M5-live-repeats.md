@@ -51,7 +51,7 @@ Across the four runs so far (the one recording and these three):
 | Infra's estimate taken as our due date | 3 of 4 |
 | The reviewer's "today" put on the search fix | 3 of 4 |
 | An item added for something that is not an action | 2 of 4 |
-| A returning item added as new (the duplicate the brief names) | 1 of 4 |
+| A returning item added as new (the classic duplicate) | 1 of 4 |
 | A skipped item (the retro) | 1 of 4 |
 | A quote that was not said | 0 of 4 |
 | A wrong owner | 0 of 4 |

@@ -37,7 +37,7 @@ and the form for the next standup.
 - **Supporting words on every item.** The whole-list table and the approved list now show, under each
   title, the quotes from the item's most recent history entry that has any, with speaker and date. Before,
   items the day did not touch showed none without a click, and the approved list showed none at all, which
-  fell short of the brief ("the words in the transcript that support it").
+  fell short of the goal ("the words in the transcript that support it").
 - The note is no longer shown twice on a changed card.
 - A state file that cannot be read gives a message with what to do, not a bare server error.
 - A local `.env` (git-ignored) holds a reference to the key in the shell, so the page can run live.
@@ -104,7 +104,7 @@ focus rings. A screen reader. Widths between phone and desktop. There is no dark
   `submit_standup` the command line used for the live run, but a 20 to 40 second wait in the browser has not
   been seen. The waiting message has been checked only by reading the code, not by watching a live run.
 - **Looked at, not user-tested.** I checked that the page renders and reads sensibly at one window size. No
-  one timed how quickly a lead can check a day, which is what the brief cares about.
+  one timed how quickly a lead can check a day, which is what matters most.
 - Friday's draft, the could-not-verify section and the failed-run notice were exercised by tests, not looked
   at in the browser. The recorded week has no refused change, so that section has never been rendered with
   real data.

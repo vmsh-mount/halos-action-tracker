@@ -37,7 +37,7 @@ about 2 h 20 min.
 ## Open
 
 - The plan's remaining milestones (M2 to M6) total 3 h 50 min. With 2 h 20 min spent, that passes the
-  five-hour limit in the brief by about 1 h 10 min. Either scope is cut, or the overrun is stated in the
+  five-hour budget by about 1 h 10 min. Either scope is cut, or the overrun is stated in the
   README.
 - Held-out transcripts and their expected properties are to be written outside this repository before the
   freeze.

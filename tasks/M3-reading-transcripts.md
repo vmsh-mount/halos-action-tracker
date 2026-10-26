@@ -1,6 +1,6 @@
 # M3 — Reading transcripts
 
-Budget: 55 min. Plan: [PLAN.md](../PLAN.md) section 3.
+Budget: 55 min.
 
 The model enters here. Everything from "transcript submitted" to "draft saved", run from the command line.
 

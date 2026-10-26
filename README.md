@@ -3,8 +3,6 @@
 Turns daily standup transcripts into a running list of action items. A model proposes changes, code checks
 each one against the transcript, and the lead reviews and approves before anything is saved.
 
-Halos engineering assignment. The brief is in [Halos Assignment.pdf](Halos%20Assignment.pdf).
-
 ![The review screen for Thursday's standup](docs/images/review.jpg)
 
 ## How it works
@@ -66,7 +64,7 @@ Command line: `python -m standup_tracker run-week transcripts`, plus `process`, 
 | **Human approval** | Proposed changes are a draft until the lead approves. Refused changes are kept and shown with the reason, not dropped | The lead was in the meeting and is the authority; nothing fails silently |
 | **Unsure means empty and flagged** | Hedged dates ("maybe tomorrow"), conditions ("if the cert lands") and undecided items go to the lead with the words that were said | A guess that looks confident is worse than a visible gap |
 | **Explicit state and lifecycle** | Drafts, approved daily snapshots, removed items and saved model responses are separate things. Dropped (the team cancelled it) is not removed (the lead says it was never an item) | Auditing and reproducible tests: any day can be looked up, and the demo and tests replay recorded answers |
-| **Generalisation over memorisation** | The five given transcripts are a practice set that nothing in the prompt or code may name; a test enforces it. New transcripts then bring ambiguous ownership, conditional commitments, near-duplicates and moving deadlines | The brief asks for new transcripts to work, and a system fitted to five days would look better than it is |
+| **Generalisation over memorisation** | The five given transcripts are a practice set that nothing in the prompt or code may name; a test enforces it. New transcripts then bring ambiguous ownership, conditional commitments, near-duplicates and moving deadlines | It has to work on new transcripts, and a system fitted to five days would look better than it is |
 | **One generic model interface** | `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`; no provider is named in code | Swapping the model is a settings change |
 
 The reasoning, and the decisions that were reversed along the way, are in
@@ -108,13 +106,13 @@ Details: [practice week](progress/M5-live-repeats.md) ·
 
 ## Left out or unfinished
 
-- Login, database, deployment, Linear or Jira integration, audio input (out of scope by the brief).
+- Login, database, deployment, Linear or Jira integration, audio input (out of scope for now).
 - Undo after approval; editing a title or note; merging or splitting items by hand.
 - Transcripts not laid out as `Name: words`; languages other than English.
 - Nothing was changed in response to the live results. The mistakes above are still there.
 - No test with a second team's settings file.
 
-## With one more day
+## Next steps
 
 I'd prioritise end-to-end validation over adding features: compare actual outputs with a carefully defined
 answer key, fix the highest-impact failures, and test several unseen transcripts. The goal would be to
@@ -154,19 +152,12 @@ What stands in the way, so this is a direction and not a claim:
 Other extensions: a second lead action to add a missed item; writing approved items to Linear or Jira;
 transcripts in other layouts and languages.
 
-## Time spent
-
-About 4 h 45 min in one sitting: roughly 1 h 50 min on design documents, and the rest on building, testing,
-live runs and this write-up. The design phase ran well past its 30-minute plan.
-
 ## More
 
 | | |
 |---|---|
-| [PLAN.md](PLAN.md) | Scope, requirements, milestones |
 | [docs/](docs/) | Rules, data models, components, evaluation, implementation details |
 | [docs/decisions-log.md](docs/decisions-log.md) | Decisions and reversals, in order |
 | [docs/scoreboard.md](docs/scoreboard.md) | Bars for quality, cost and speed; current figures; how to compare configurations |
-| [docs/coding-agent-transcript.md](docs/coding-agent-transcript.md) | About the agent session behind this repository |
 | [progress/](progress/) | One note per milestone: what was done, the evidence, what was not checked |
 | [heldout/second-week/](heldout/second-week/) | Unseen transcripts, expectations, raw runs, results |

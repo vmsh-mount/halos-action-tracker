@@ -23,7 +23,7 @@ with a coding agent; "review" means an independent review the owner brought in a
 
 | # | Decision | Why |
 |---|---|---|
-| 11 | The five standups are a practice set; nothing in the prompt or code may name them | The brief asks for new transcripts to work. A test fails if a practice word appears in the prompt or source. [Generalisation](generalisation-beyond-the-five-standups.md) |
+| 11 | The five standups are a practice set; nothing in the prompt or code may name them | New transcripts have to work. A test fails if a practice word appears in the prompt or source. [Generalisation](generalisation-beyond-the-five-standups.md) |
 | 12 | Checks are properties found through transcript turns, never through model-written titles | A title match is a wording check in disguise. [Generalisation §5](generalisation-beyond-the-five-standups.md) |
 | 13 | Saved answers are recorded once and not edited; misses are marked as expected failures | Re-recording until it passes would be choosing the sample |
 | 14 | Expectations for unseen transcripts are written, and reviewed, before running | So the output cannot steer the judging |

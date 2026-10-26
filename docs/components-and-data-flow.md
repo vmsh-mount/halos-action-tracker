@@ -71,7 +71,7 @@ One operation: **text in, text out**.
 
 The lookup key means nothing to the interface. `service` builds it from the standup date and a short hash
 of the **parsed turns** (each turn's speaker and words, with runs of whitespace collapsed), not of the text
-as typed. Pasting a transcript into the page changes its line endings, and copying from the PDF changes its
+as typed. Pasting a transcript into the page changes its line endings, and copying from a document changes its
 line wrapping; the turns come out the same, so the key does too. The chat API client ignores it; Replay and the Recorder use it as the name of the saved
 answer. So `llm/` still knows nothing about standups.
 

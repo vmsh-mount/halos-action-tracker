@@ -1,6 +1,6 @@
 # M2 — List engine (no AI)
 
-Budget: 40 min. Plan: [PLAN.md](../PLAN.md) section 3.
+Budget: 40 min.
 
 Everything that turns proposed changes into a reviewed list, with no model and no web page. Input is
 hand-written proposed changes; output is checked changes, the draft, and the saved state.

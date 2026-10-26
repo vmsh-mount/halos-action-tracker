@@ -157,7 +157,7 @@ Nothing else is discarded silently: a failed change is still visible to the lead
   Tuesday infra's cert "will be done tomorrow morning"; if the model returns that as the deploy's due phrase,
   code sets 15 Oct, against U12. Only the model can avoid it.
 - **Duplicates without a ticket id rest on the model alone.** Nothing in code notices if "Atlas export" is
-  added as a new item beside "Export feature". This is the mistake the brief names, so it is the first thing
+  added as a new item beside "Export feature". This is the mistake that matters most, so it is the first thing
   `evaluation-checks.md` measures, and the lead's remove button is the only correction for it in this
   version.
 

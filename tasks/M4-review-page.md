@@ -1,6 +1,6 @@
 # M4 — Review page
 
-Budget: 55 min. Plan: [PLAN.md](../PLAN.md) section 3.
+Budget: 55 min.
 
 The page the lead checks after each standup. It reads day records and calls the existing service and review
 functions. It changes nothing about what the model is shown: the prompt, the item lines and the engine are

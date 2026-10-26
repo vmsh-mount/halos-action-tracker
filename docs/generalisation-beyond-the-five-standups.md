@@ -3,7 +3,7 @@
 Status: **proposal for review** (fourth revision). Written before any code or
 prompt exists.
 
-The brief says the system "should also work with a new transcript", and the interview may hand us one. So
+The system has to work with a new transcript, not just the five it was built on. So
 the five given standups are examples of the problem, not the problem. **Nothing in the prompt or the code
 may be shaped around them.** This document says what that means in practice.
 
@@ -167,7 +167,7 @@ model-written, so finding an item "by a keyword in the title" would be a wording
   history. Each item has one home. A tie is reported for a person to look at, not passed.
 - A ticket id also works as an anchor once it is on the item.
 
-The first check for every piece of work is the same, and it is the duplicate check the brief asks for:
+The first check for every piece of work is the same, and it is the duplicate check:
 **exactly one item has its home there.** If "Atlas export" is added as a second item on Wednesday, its only
 quote is from the export's core, so two items are at home on the export and the check fails. And a correct
 run where one sentence closes two items still passes: the auth bug's home is the auth work, on the strength
@@ -197,7 +197,7 @@ correct run should satisfy written down beforehand. Two parts:
 
 | Part | Contents | Why |
 |---|---|---|
-| H1 | One standup for the same team on Monday 20 October, continuing from a fixed starting list (below) | The likeliest thing the interview hands over |
+| H1 | One standup for the same team on Monday 20 October, continuing from a fixed starting list (below) | The likeliest next input |
 | H2 | Three consecutive standups for a different team: other names, systems and ticket prefixes, with its own settings file | Shows nothing is wired to this team. Consecutive days, because reassigning, unblocking and "didn't get to X" all need a list from the day before |
 
 Between them they include at least five of the cases in section 4 marked "Held-out", and one standup where
@@ -205,7 +205,7 @@ almost nothing changes.
 
 **Who writes what.**
 
-- A fresh assistant session drafts the transcripts from the brief and the case names in section 4. It does
+- A fresh assistant session drafts the transcripts from the problem description and the case names in section 4. It does
   not see the rules, the answer key or the prompt.
 - You write the expected properties for each, since that needs the rules.
 - I do not see either until step 3.

@@ -1,6 +1,6 @@
 # M5 — Live repeats of the practice week
 
-Budget: 40 min. Plan: [PLAN.md](../PLAN.md) section 3. Method: `docs/evaluation-checks.md` section 6.
+Budget: 40 min. Method: `docs/evaluation-checks.md` section 6.
 
 | # | Item | Done |
 |---|---|---|

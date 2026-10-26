@@ -1,6 +1,6 @@
 # M1 — Design docs
 
-Budget: 30 min. Plan: [PLAN.md](../PLAN.md) sections 3 and 6.
+Budget: 30 min.
 
 ## Work items
 

@@ -458,7 +458,7 @@ the set run once after the freeze (gen §6). "None" = stated in the README only.
 | # | Where | Disagreement | Decision |
 |---|---|---|---|
 | X 1 | Rules C2 vs rules §6 and models §9 | An update aimed at a removed item: "could not verify" in one place, "not tracked, removed by lead" in two | Not tracked. Checked changes gain a fourth outcome, `not_tracked` |
-| X 2 | Rules §6, PLAN R20 vs flow §4.2 | "Everything the lead does is recorded" against edits being lost on discard and re-run | The promise covers approved days. Edits on a draft that is discarded or re-run are gone |
+| X 2 | Rules §6, R20 vs flow §4.2 | "Everything the lead does is recorded" against edits being lost on discard and re-run | The promise covers approved days. Edits on a draft that is discarded or re-run are gone |
 | X 3 | Models §6 example | A first date labelled `re-dated` | A first date is `dated` |
 | X 4 | Rules §4 vs the key | "Still Monday" resolves to the date already held but changes the stored phrase, so it was not a no-op | When D3 yields the date already held, neither field changes |
 | X 5 | Rules §4 reopen rule vs D1 | A reopen whose phrase fails D1: keep the date, or clear it | The reopen rule wins: cleared |
@@ -471,7 +471,7 @@ the set run once after the freeze (gen §6). "None" = stated in the README only.
 | X 12 | Models §12 vs §11 | "Replay matching: by date" | Row corrected: date plus a hash of the turns |
 | X 13 | Rules §8 | Settled rows cited an earlier check numbering | Rows corrected |
 | X 14 | Gen §5 vs models §10 | "The list never loses an item except by removal" | Reworded: an approved id never disappears |
-| X 15 | PLAN layout vs models §3 | No `config/` folder in the layout | Added |
+| X 15 | Planned layout vs models §3 | No `config/` folder in the layout | Added |
 | X 16 | Rules U20 vs rules §3 | U20 said the model returns the date expression "condition included"; §3 says conditions need not be in the phrase | U20 corrected to match §3 |
 
 ## 11. Questions the documents did not answer, and the decision on each
